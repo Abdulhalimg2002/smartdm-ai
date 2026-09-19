@@ -14,7 +14,7 @@ import {
 export default class M extends Migration<never, End> {
   override readonly endContractJson = endContract;
 
-  override get operations() {
+  override get operations(): Migration<never, End>['operations'] {
     return [
       this.createSchema({ schema: 'public' }),
       this.createTable({
