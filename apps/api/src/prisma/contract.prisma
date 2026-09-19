@@ -1,2 +1,733 @@
 // use prisma-8
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// ======================================================
+// IAM
+// ======================================================
+
+model User {
+  id              Uuid       @id @default(uuid())
+  email           VarChar(255) @unique
+  firstName       VarChar(100)?
+  lastName        VarChar(100)?
+  status          UserStatus @default(ACTIVE)
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       temporal.updatedAt()
+
+  credentials     UserCredential?
+  authProviders   UserAuthProvider[]
+  sessions        Session[]
+  passwordResets  PasswordReset[]
+  authEvents      AuthEvent[]
+
+  userRoleAssignments     UserRoleAssignment[] @relation("UserRoleAssignments")
+  assignedRoleAssignments UserRoleAssignment[] @relation("AssignedUserRoles")
+
+  tenantMemberships        TenantMembership[] @relation("UserTenantMemberships")
+  invitedTenantMemberships TenantMembership[] @relation("InvitedTenantMemberships")
+
+  workspaceMemberships        WorkspaceMembership[] @relation("UserWorkspaceMemberships")
+  invitedWorkspaceMemberships WorkspaceMembership[] @relation("InvitedWorkspaceMemberships")
+
+  invitedTenantInvitations    TenantInvitation[]    @relation("InvitedTenantInvitations")
+  invitedWorkspaceInvitations WorkspaceInvitation[] @relation("InvitedWorkspaceInvitations")
+
+  crmContacts CrmContact[]
+}
+
+model UserCredential {
+  id                Uuid      @id @default(uuid())
+  userId            Uuid      @unique
+  passwordHash      VarChar(255)
+  passwordChangedAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         temporal.updatedAt()
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model AuthProvider {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(100)
+  code        VarChar(50) @unique
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  userAuthProviders UserAuthProvider[]
+}
+
+model UserAuthProvider {
+  id              Uuid        @id @default(uuid())
+  userId          Uuid
+  authProviderId  Uuid
+  providerUserId  VarChar(255)?
+  providerEmail   VarChar(255)?
+  isActive        Boolean     @default(true)
+  lastUsedAt      DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       temporal.updatedAt()
+
+  user         User         @relation(fields: [userId], references: [id])
+  authProvider AuthProvider @relation(fields: [authProviderId], references: [id])
+
+  @@unique([userId, authProviderId])
+  @@unique([authProviderId, providerUserId])
+}
+
+model Session {
+  id             Uuid        @id @default(uuid())
+  userId         Uuid
+  tokenHash      VarChar(255) @unique
+  ipAddress      VarChar(45)?
+  userAgent      String?
+  lastActivityAt DateTime
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      temporal.updatedAt()
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model PasswordReset {
+  id          Uuid        @id @default(uuid())
+  userId      Uuid
+  tokenHash   VarChar(255) @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model AuthEvent {
+  id              Uuid        @id @default(uuid())
+  userId          Uuid?
+  authEventTypeId Uuid
+  occurredAt      DateTime
+  ipAddress       VarChar(45)?
+  userAgent       String?
+  createdAt       DateTime    @default(now())
+  updatedAt       temporal.updatedAt()
+
+  user          User?         @relation(fields: [userId], references: [id])
+  authEventType AuthEventType @relation(fields: [authEventTypeId], references: [id])
+
+  @@index([userId, occurredAt])
+}
+
+model AuthEventType {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  authEvents AuthEvent[]
+}
+
+model Role {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(100)
+  code        VarChar(50) @unique
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  rolePermissions     RolePermission[]
+  userRoleAssignments UserRoleAssignment[]
+}
+
+model Permission {
+  id                Uuid         @id @default(uuid())
+  name              VarChar(150)
+  code              VarChar(100) @unique
+  description       String?
+  permissionGroupId Uuid?
+  isActive          Boolean      @default(true)
+  sortOrder         Int?
+  createdAt         DateTime     @default(now())
+  updatedAt         temporal.updatedAt()
+
+  permissionGroup PermissionGroup? @relation(fields: [permissionGroupId], references: [id])
+  rolePermissions RolePermission[]
+
+  @@index([permissionGroupId])
+}
+
+model RolePermission {
+  id           Uuid     @id @default(uuid())
+  roleId       Uuid
+  permissionId Uuid
+  createdAt    DateTime @default(now())
+  updatedAt    temporal.updatedAt()
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model PermissionGroup {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(100)
+  code        VarChar(50) @unique
+  description String?
+  sortOrder   Int?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  permissions Permission[]
+}
+
+model UserRoleAssignment {
+  id            Uuid      @id @default(uuid())
+  userId        Uuid
+  roleId        Uuid
+  scopeTypeId   Uuid
+  scopeId       Uuid?
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  isActive      Boolean   @default(true)
+  assignedBy    Uuid?
+  createdAt     DateTime  @default(now())
+  updatedAt     temporal.updatedAt()
+
+  user           User      @relation("UserRoleAssignments", fields: [userId], references: [id])
+  role           Role      @relation(fields: [roleId], references: [id])
+  scopeType      ScopeType @relation(fields: [scopeTypeId], references: [id])
+  assignedByUser User?     @relation("AssignedUserRoles", fields: [assignedBy], references: [id])
+
+  @@unique([userId, roleId, scopeTypeId, scopeId])
+  @@index(
+    [userId, scopeTypeId, scopeId, isActive],
+    map: "ura_scope_active_idx"
+  )
+}
+model ScopeType {
+  id                  Uuid        @id @default(uuid())
+  name                VarChar(50)
+  code                VarChar(30) @unique
+  description         String?
+  sortOrder           Int         @default(0)
+  isActive            Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  updatedAt           temporal.updatedAt()
+
+  userRoleAssignments UserRoleAssignment[]
+}
+
+// ======================================================
+// TENANT
+// ======================================================
+
+model Tenant {
+  id                      Uuid        @id @default(uuid())
+  name                    VarChar(150)
+  slug                    VarChar(150) @unique
+  code                    VarChar(50)? @unique
+  tenantTypeId            Uuid
+  tenantStatusId          Uuid
+  legalName               VarChar(200)?
+  contactEmail            VarChar(255)?
+  contactPhone            VarChar(30)?
+  websiteUrl              VarChar(500)?
+  defaultTimezoneId       Uuid?
+  defaultCurrencyId       Uuid?
+  createdAt               DateTime    @default(now())
+  updatedAt               temporal.updatedAt()
+
+  tenantType             TenantType   @relation(fields: [tenantTypeId], references: [id])
+  tenantStatus           TenantStatus @relation(fields: [tenantStatusId], references: [id])
+
+  workspaces             Workspace[]
+  tenantMemberships      TenantMembership[]
+  tenantInvitations      TenantInvitation[]
+  integrationConnections IntegrationConnection[]
+}
+
+model TenantType {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(50)
+  code        VarChar(30) @unique
+  description String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  tenants Tenant[]
+}
+
+model TenantStatus {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(50)
+  code        VarChar(30) @unique
+  description String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  tenants Tenant[]
+}
+
+model Workspace {
+  id                Uuid        @id @default(uuid())
+  tenantId          Uuid
+  name              VarChar(150)
+  slug              VarChar(150)
+  code              VarChar(50)?
+  workspaceTypeId   Uuid?
+  workspaceStatusId Uuid
+  defaultTimezoneId Uuid?
+  defaultCurrencyId Uuid?
+  createdAt         DateTime    @default(now())
+  updatedAt         temporal.updatedAt()
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  workspaceType   WorkspaceType?  @relation(fields: [workspaceTypeId], references: [id])
+  workspaceStatus WorkspaceStatus @relation(fields: [workspaceStatusId], references: [id])
+
+  workspaceMemberships WorkspaceMembership[]
+  workspaceInvitations WorkspaceInvitation[]
+
+  crmContacts  CrmContact[]
+  crmTags      CrmTag[]
+  crmCompanies CrmCompany[]
+
+  @@unique([tenantId, slug])
+  @@unique([tenantId, code])
+}
+
+model WorkspaceType {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(50)
+  code        VarChar(30) @unique
+  description String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspaces Workspace[]
+}
+
+model WorkspaceStatus {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(50)
+  code        VarChar(30) @unique
+  description String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspaces Workspace[]
+}
+
+model TenantMembership {
+  id        Uuid      @id @default(uuid())
+  tenantId  Uuid
+  userId    Uuid
+  joinedAt  DateTime
+  leftAt    DateTime?
+  isActive  Boolean   @default(true)
+  invitedBy Uuid?
+  createdAt DateTime  @default(now())
+  updatedAt temporal.updatedAt()
+
+  tenant       Tenant @relation(fields: [tenantId], references: [id])
+  user         User   @relation("UserTenantMemberships", fields: [userId], references: [id])
+  invitedByUser User?  @relation("InvitedTenantMemberships", fields: [invitedBy], references: [id])
+
+  @@unique([tenantId, userId])
+  @@index([userId])
+}
+
+model WorkspaceMembership {
+  id          Uuid      @id @default(uuid())
+  workspaceId Uuid
+  userId      Uuid
+  joinedAt    DateTime
+  leftAt      DateTime?
+  isActive    Boolean   @default(true)
+  invitedBy   Uuid?
+  createdAt   DateTime  @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspace    Workspace @relation(fields: [workspaceId], references: [id])
+  user         User      @relation("UserWorkspaceMemberships", fields: [userId], references: [id])
+  invitedByUser User?     @relation("InvitedWorkspaceMemberships", fields: [invitedBy], references: [id])
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+}
+
+model TenantInvitation {
+  id          Uuid        @id @default(uuid())
+  tenantId    Uuid
+  email       VarChar(255)
+  tokenHash   VarChar(255) @unique
+  invitedBy   Uuid
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  tenant       Tenant @relation(fields: [tenantId], references: [id])
+  invitedByUser User   @relation("InvitedTenantInvitations", fields: [invitedBy], references: [id])
+
+  @@index([tenantId])
+}
+
+model WorkspaceInvitation {
+  id          Uuid        @id @default(uuid())
+  workspaceId Uuid
+  email       VarChar(255)
+  tokenHash   VarChar(255) @unique
+  invitedBy   Uuid
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspace    Workspace @relation(fields: [workspaceId], references: [id])
+  invitedByUser User      @relation("InvitedWorkspaceInvitations", fields: [invitedBy], references: [id])
+
+  @@index([workspaceId])
+}
+
+// ======================================================
+// CRM
+// ======================================================
+
+model CrmContact {
+  id          Uuid        @id @default(uuid())
+  workspaceId Uuid
+  companyId   Uuid?
+  firstName   VarChar(100)?
+  lastName    VarChar(100)?
+  email       VarChar(255)?
+  phone       VarChar(50)?
+  jobTitle    VarChar(150)?
+  sourceId    Uuid?
+  statusId    Uuid?
+  ownerUserId Uuid?
+  metadata    Jsonb?
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspace Workspace          @relation(fields: [workspaceId], references: [id])
+  company   CrmCompany?        @relation(fields: [companyId], references: [id])
+  source    CrmContactSource?  @relation(fields: [sourceId], references: [id])
+  status    CrmContactStatus?  @relation(fields: [statusId], references: [id])
+  ownerUser User?             @relation(fields: [ownerUserId], references: [id])
+
+  contactTags CrmContactTag[]
+
+  @@index([workspaceId, companyId])
+  @@index([workspaceId, statusId])
+  @@index([workspaceId, ownerUserId])
+  @@index([workspaceId, sourceId])
+  @@index([workspaceId, createdAt])
+}
+
+model CrmContactSource {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  contacts CrmContact[]
+}
+
+model CrmContactStatus {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  contacts CrmContact[]
+}
+
+model CrmTag {
+  id          Uuid        @id @default(uuid())
+  workspaceId Uuid
+  code        VarChar(50)
+  name        VarChar(100)
+  description String?
+  color       VarChar(20)?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
+  contactTags CrmContactTag[]
+
+  @@unique([workspaceId, code])
+  @@unique([workspaceId, name])
+  @@index([workspaceId, isActive])
+}
+
+model CrmContactTag {
+  id        Uuid     @id @default(uuid())
+  contactId Uuid
+  tagId     Uuid
+  createdAt DateTime @default(now())
+
+  contact CrmContact @relation(fields: [contactId], references: [id])
+  tag     CrmTag     @relation(fields: [tagId], references: [id])
+
+  @@unique([contactId, tagId])
+  @@index([tagId])
+}
+
+model CrmCompany {
+  id              Uuid        @id @default(uuid())
+  workspaceId     Uuid
+  name            VarChar(255)
+  legalName       VarChar(255)?
+  industry        VarChar(100)?
+  website         VarChar(255)?
+  email           VarChar(255)?
+  phone           VarChar(50)?
+  countryRegionId Uuid?
+  city            VarChar(100)?
+  description     String?
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       temporal.updatedAt()
+
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  countryRegion Region?   @relation(fields: [countryRegionId], references: [id])
+
+  contacts CrmContact[]
+
+  @@index([workspaceId])
+  @@index([countryRegionId])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// ======================================================
+// REFERENCE DATA
+// ======================================================
+
+model Region {
+  id             Uuid        @id @default(uuid())
+  name           VarChar(100)
+  code           VarChar(20) @unique
+  regionTypeId   Uuid
+  parentRegionId Uuid?
+  sortOrder      Int         @default(0)
+  isActive       Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      temporal.updatedAt()
+
+  regionType   RegionType @relation(fields: [regionTypeId], references: [id])
+  parentRegion Region?    @relation("RegionHierarchy", fields: [parentRegionId], references: [id])
+  childRegions Region[]   @relation("RegionHierarchy")
+
+  crmCompanies CrmCompany[]
+
+  @@index([regionTypeId])
+  @@index([parentRegionId])
+}
+
+model RegionType {
+  id          Uuid        @id @default(uuid())
+  name        VarChar(50)
+  code        VarChar(30) @unique
+  description String?
+  sortOrder   Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  regions Region[]
+}
+
+// ======================================================
+// INTEGRATIONS
+// ======================================================
+
+model IntegrationProvider {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  integrationConnections IntegrationConnection[]
+  integrationChannels    IntegrationChannel[]
+}
+
+model IntegrationChannel {
+  id          Uuid        @id @default(uuid())
+  providerId  Uuid
+  code        VarChar(50)
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  provider               IntegrationProvider    @relation(fields: [providerId], references: [id])
+  integrationConnections IntegrationConnection[]
+
+  @@unique([providerId, code])
+}
+
+model IntegrationConnectionStatus {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  integrationConnections IntegrationConnection[]
+}
+
+model IntegrationConnection {
+  id                  Uuid        @id @default(uuid())
+  tenantId            Uuid
+  providerId          Uuid
+  channelId           Uuid
+  externalAccountId   VarChar(255)?
+  externalAccountName VarChar(255)?
+  statusId            Uuid
+  connectedAt         DateTime?
+  lastConnectedAt     DateTime?
+  disconnectedAt      DateTime?
+  lastError           String?
+  metadata            Jsonb?
+  createdAt           DateTime    @default(now())
+  updatedAt           temporal.updatedAt()
+
+  tenant      Tenant                    @relation(fields: [tenantId], references: [id])
+  provider    IntegrationProvider       @relation(fields: [providerId], references: [id])
+  channel     IntegrationChannel        @relation(fields: [channelId], references: [id])
+  status      IntegrationConnectionStatus @relation(fields: [statusId], references: [id])
+
+  credentials IntegrationConnectionCredential[]
+  webhooks    IntegrationWebhook[]
+
+  @@unique([tenantId, providerId, channelId, externalAccountId])
+  @@index([tenantId, statusId])
+}
+
+model IntegrationConnectionCredential {
+  id                   Uuid        @id @default(uuid())
+  connectionId         Uuid
+  credentialType       VarChar(50)
+  encryptedCredentials String
+  expiresAt            DateTime?
+  createdAt            DateTime    @default(now())
+  updatedAt            temporal.updatedAt()
+
+  connection IntegrationConnection @relation(fields: [connectionId], references: [id])
+
+  @@unique([connectionId, credentialType])
+}
+
+model IntegrationWebhookStatus {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  webhooks IntegrationWebhook[]
+}
+
+model IntegrationWebhook {
+  id                   Uuid        @id @default(uuid())
+  connectionId         Uuid
+  externalWebhookId    VarChar(255)?
+  webhookUrl           String
+  encryptedVerifyToken String?
+  statusId             Uuid
+  lastReceivedAt       DateTime?
+  lastError            String?
+  createdAt            DateTime    @default(now())
+  updatedAt            temporal.updatedAt()
+
+  connection IntegrationConnection @relation(fields: [connectionId], references: [id])
+  status     IntegrationWebhookStatus @relation(fields: [statusId], references: [id])
+
+  events IntegrationWebhookEvent[]
+
+  @@index([connectionId])
+}
+
+model IntegrationWebhookEventStatus {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  events IntegrationWebhookEvent[]
+}
+
+model IntegrationWebhookEvent {
+  id              Uuid        @id @default(uuid())
+  webhookId       Uuid
+  externalEventId VarChar(255)?
+  eventType       VarChar(100)
+  payload         Jsonb
+  statusId        Uuid
+  receivedAt      DateTime
+  processedAt     DateTime?
+  errorMessage    String?
+  createdAt       DateTime    @default(now())
+  updatedAt       temporal.updatedAt()
+
+  webhook IntegrationWebhook           @relation(fields: [webhookId], references: [id])
+  status  IntegrationWebhookEventStatus @relation(fields: [statusId], references: [id])
+
+  @@unique([webhookId, externalEventId])
+  @@index([receivedAt])
+}
