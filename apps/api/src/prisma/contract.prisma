@@ -21,11 +21,11 @@ model User {
   createdAt       DateTime   @default(now())
   updatedAt       temporal.updatedAt()
 
-  credentials     UserCredential?
-  authProviders   UserAuthProvider[]
-  sessions        Session[]
-  passwordResets  PasswordReset[]
-  authEvents      AuthEvent[]
+  credentials    UserCredential?
+  authProviders  UserAuthProvider[]
+  sessions       Session[]
+  passwordResets PasswordReset[]
+  authEvents     AuthEvent[]
 
   userRoleAssignments     UserRoleAssignment[] @relation("UserRoleAssignments")
   assignedRoleAssignments UserRoleAssignment[] @relation("AssignedUserRoles")
@@ -40,6 +40,15 @@ model User {
   invitedWorkspaceInvitations WorkspaceInvitation[] @relation("InvitedWorkspaceInvitations")
 
   crmContacts CrmContact[]
+
+  sentMessages SocialInboxMessage[]
+
+  conversationReads SocialInboxConversationRead[]
+  aiAgentsCreated AiAgent[] @relation("AiAgentsCreated")
+
+  conversationAssignments    SocialInboxConversationAssignment[] @relation("ConversationAssignments")
+  conversationAssignmentsMade SocialInboxConversationAssignment[] @relation("ConversationAssignmentsMade")
+  
 }
 
 model UserCredential {
@@ -50,7 +59,7 @@ model UserCredential {
   createdAt         DateTime  @default(now())
   updatedAt         temporal.updatedAt()
 
-  user User @relation(fields: [userId], references: [id])
+ user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 }
 
 model AuthProvider {
@@ -77,8 +86,9 @@ model UserAuthProvider {
   createdAt       DateTime    @default(now())
   updatedAt       temporal.updatedAt()
 
-  user         User         @relation(fields: [userId], references: [id])
-  authProvider AuthProvider @relation(fields: [authProviderId], references: [id])
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+
+  authProvider AuthProvider @relation( fields: [authProviderId], references: [id],onDelete: Restrict)
 
   @@unique([userId, authProviderId])
   @@unique([authProviderId, providerUserId])
@@ -96,7 +106,7 @@ model Session {
   createdAt      DateTime    @default(now())
   updatedAt      temporal.updatedAt()
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
 
   @@index([userId])
 }
@@ -111,7 +121,7 @@ model PasswordReset {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation( fields: [userId],references: [id],onDelete: Cascade)
 
   @@index([userId])
 }
@@ -126,8 +136,9 @@ model AuthEvent {
   createdAt       DateTime    @default(now())
   updatedAt       temporal.updatedAt()
 
-  user          User?         @relation(fields: [userId], references: [id])
-  authEventType AuthEventType @relation(fields: [authEventTypeId], references: [id])
+  user User? @relation(fields: [userId],references: [id],onDelete: SetNull)
+
+  authEventType AuthEventType @relation(fields: [authEventTypeId],references: [id],onDelete: Restrict)
 
   @@index([userId, occurredAt])
 }
@@ -169,7 +180,8 @@ model Permission {
   createdAt         DateTime     @default(now())
   updatedAt         temporal.updatedAt()
 
-  permissionGroup PermissionGroup? @relation(fields: [permissionGroupId], references: [id])
+  permissionGroup PermissionGroup? @relation(fields: [permissionGroupId],references: [id],onDelete: SetNull)
+
   rolePermissions RolePermission[]
 
   @@index([permissionGroupId])
@@ -182,8 +194,9 @@ model RolePermission {
   createdAt    DateTime @default(now())
   updatedAt    temporal.updatedAt()
 
-  role       Role       @relation(fields: [roleId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
+  role Role @relation( fields: [roleId], references: [id],onDelete: Cascade)
+
+  permission Permission @relation(fields: [permissionId],references: [id],onDelete: Cascade)
 
   @@unique([roleId, permissionId])
   @@index([permissionId])
@@ -226,6 +239,7 @@ model UserRoleAssignment {
     map: "ura_scope_active_idx"
   )
 }
+
 model ScopeType {
   id                  Uuid        @id @default(uuid())
   name                VarChar(50)
@@ -233,7 +247,7 @@ model ScopeType {
   description         String?
   sortOrder           Int         @default(0)
   isActive            Boolean     @default(true)
-  createdAt           DateTime    @default(now())
+  createdAt            DateTime    @default(now())
   updatedAt           temporal.updatedAt()
 
   userRoleAssignments UserRoleAssignment[]
@@ -259,13 +273,46 @@ model Tenant {
   createdAt               DateTime    @default(now())
   updatedAt               temporal.updatedAt()
 
-  tenantType             TenantType   @relation(fields: [tenantTypeId], references: [id])
-  tenantStatus           TenantStatus @relation(fields: [tenantStatusId], references: [id])
+  tenantType TenantType @relation(fields: [tenantTypeId],references: [id],onDelete: Restrict)
+  tenantStatus           TenantStatus @relation(fields: [tenantStatusId], references: [id],onDelete: Restrict)
+  defaultTimezone        Timezone?    @relation(fields: [defaultTimezoneId], references: [id],onDelete: Restrict)
+  defaultCurrency        Currency?    @relation(fields: [defaultCurrencyId], references: [id],onDelete: Restrict)
 
   workspaces             Workspace[]
   tenantMemberships      TenantMembership[]
   tenantInvitations      TenantInvitation[]
   integrationConnections IntegrationConnection[]
+}
+// ======================================================
+// REFERENCE DATA
+// ======================================================
+model Timezone {
+  id        Uuid        @id @default(uuid())
+  ianaName  VarChar(100) @unique
+  regionId  Uuid?
+  sortOrder Int
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt temporal.updatedAt()
+
+  region     Region?    @relation(fields: [regionId], references: [id])
+  tenants    Tenant[]
+  workspaces Workspace[]
+}
+model Currency {
+  id            Uuid      @id @default(uuid())
+  name          VarChar(100)
+  code          VarChar(3) @unique
+  numericCode   Int       @unique
+  symbol        VarChar(10)
+  decimalPlaces Int
+  sortOrder     Int
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     temporal.updatedAt()
+
+  tenants    Tenant[]
+  workspaces Workspace[]
 }
 
 model TenantType {
@@ -307,10 +354,37 @@ model Workspace {
   createdAt         DateTime    @default(now())
   updatedAt         temporal.updatedAt()
 
-  tenant          Tenant          @relation(fields: [tenantId], references: [id])
-  workspaceType   WorkspaceType?  @relation(fields: [workspaceTypeId], references: [id])
-  workspaceStatus WorkspaceStatus @relation(fields: [workspaceStatusId], references: [id])
+  tenant Tenant @relation(
+    fields: [tenantId],
+    references: [id],
+    onDelete: Cascade
+  )
 
+  workspaceType WorkspaceType? @relation(
+    fields: [workspaceTypeId],
+    references: [id],
+    onDelete: SetNull
+  )
+
+  workspaceStatus WorkspaceStatus @relation(
+    fields: [workspaceStatusId],
+    references: [id],
+    onDelete: Restrict
+  )
+
+  defaultTimezone Timezone? @relation(
+    fields: [defaultTimezoneId],
+    references: [id],
+    onDelete: Restrict
+  )
+
+  defaultCurrency Currency? @relation(
+    fields: [defaultCurrencyId],
+    references: [id],
+    onDelete: Restrict
+  )
+
+  aiAgents             AiAgent[]
   workspaceMemberships WorkspaceMembership[]
   workspaceInvitations WorkspaceInvitation[]
 
@@ -359,9 +433,9 @@ model TenantMembership {
   createdAt DateTime  @default(now())
   updatedAt temporal.updatedAt()
 
-  tenant       Tenant @relation(fields: [tenantId], references: [id])
-  user         User   @relation("UserTenantMemberships", fields: [userId], references: [id])
-  invitedByUser User?  @relation("InvitedTenantMemberships", fields: [invitedBy], references: [id])
+  tenant       Tenant @relation(fields: [tenantId], references: [id],onDelete: Cascade)
+  user         User   @relation("UserTenantMemberships", fields: [userId], references: [id],onDelete: Cascade)
+  invitedByUser User?  @relation("InvitedTenantMemberships", fields: [invitedBy], references: [id],onDelete: SetNull)
 
   @@unique([tenantId, userId])
   @@index([userId])
@@ -378,9 +452,25 @@ model WorkspaceMembership {
   createdAt   DateTime  @default(now())
   updatedAt   temporal.updatedAt()
 
-  workspace    Workspace @relation(fields: [workspaceId], references: [id])
-  user         User      @relation("UserWorkspaceMemberships", fields: [userId], references: [id])
-  invitedByUser User?     @relation("InvitedWorkspaceMemberships", fields: [invitedBy], references: [id])
+  workspace Workspace @relation(
+    fields: [workspaceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  user User @relation(
+    "UserWorkspaceMemberships",
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  invitedByUser User? @relation(
+    "InvitedWorkspaceMemberships",
+    fields: [invitedBy],
+    references: [id],
+    onDelete: SetNull
+  )
 
   @@unique([workspaceId, userId])
   @@index([userId])
@@ -398,8 +488,8 @@ model TenantInvitation {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  tenant       Tenant @relation(fields: [tenantId], references: [id])
-  invitedByUser User   @relation("InvitedTenantInvitations", fields: [invitedBy], references: [id])
+  tenant       Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invitedByUser User   @relation("InvitedTenantInvitations", fields: [invitedBy], references: [id],onDelete: Restrict)
 
   @@index([tenantId])
 }
@@ -416,8 +506,18 @@ model WorkspaceInvitation {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  workspace    Workspace @relation(fields: [workspaceId], references: [id])
-  invitedByUser User      @relation("InvitedWorkspaceInvitations", fields: [invitedBy], references: [id])
+  workspace Workspace @relation(
+    fields: [workspaceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  invitedByUser User @relation(
+    "InvitedWorkspaceInvitations",
+    fields: [invitedBy],
+    references: [id],
+    onDelete: Restrict
+  )
 
   @@index([workspaceId])
 }
@@ -442,13 +542,15 @@ model CrmContact {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  workspace Workspace          @relation(fields: [workspaceId], references: [id])
-  company   CrmCompany?        @relation(fields: [companyId], references: [id])
-  source    CrmContactSource?  @relation(fields: [sourceId], references: [id])
-  status    CrmContactStatus?  @relation(fields: [statusId], references: [id])
-  ownerUser User?             @relation(fields: [ownerUserId], references: [id])
+  workspace Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  company   CrmCompany?        @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  source    CrmContactSource?  @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  status    CrmContactStatus?  @relation(fields: [statusId], references: [id],onDelete: SetNull)
+  ownerUser User?             @relation(fields: [ownerUserId], references: [id],onDelete: SetNull)
 
-  contactTags CrmContactTag[]
+  contactTags  CrmContactTag[]
+  conversations SocialInboxConversation[]
+  sentMessages SocialInboxMessage[]
 
   @@index([workspaceId, companyId])
   @@index([workspaceId, statusId])
@@ -492,8 +594,9 @@ model CrmTag {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  workspace   Workspace       @relation(fields: [workspaceId], references: [id])
-  contactTags CrmContactTag[]
+  workspace         Workspace                      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contactTags       CrmContactTag[]
+  conversationTags  SocialInboxConversationTag[]
 
   @@unique([workspaceId, code])
   @@unique([workspaceId, name])
@@ -506,8 +609,8 @@ model CrmContactTag {
   tagId     Uuid
   createdAt DateTime @default(now())
 
-  contact CrmContact @relation(fields: [contactId], references: [id])
-  tag     CrmTag     @relation(fields: [tagId], references: [id])
+  contact CrmContact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag     CrmTag     @relation(fields: [tagId], references: [id],onDelete: Cascade)
 
   @@unique([contactId, tagId])
   @@index([tagId])
@@ -529,15 +632,14 @@ model CrmCompany {
   createdAt       DateTime    @default(now())
   updatedAt       temporal.updatedAt()
 
-  workspace     Workspace @relation(fields: [workspaceId], references: [id])
-  countryRegion Region?   @relation(fields: [countryRegionId], references: [id])
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  countryRegion Region?   @relation(fields: [countryRegionId], references: [id], onDelete: SetNull)
 
   contacts CrmContact[]
 
-  @@index([workspaceId])
+  @@index([workspaceId, isActive])
   @@index([countryRegionId])
-  @@index([isActive])
-  @@index([createdAt])
+  @@index([workspaceId, createdAt])
 }
 
 // ======================================================
@@ -559,6 +661,7 @@ model Region {
   parentRegion Region?    @relation("RegionHierarchy", fields: [parentRegionId], references: [id])
   childRegions Region[]   @relation("RegionHierarchy")
 
+  timezones    Timezone[]
   crmCompanies CrmCompany[]
 
   @@index([regionTypeId])
@@ -605,10 +708,11 @@ model IntegrationChannel {
   createdAt   DateTime    @default(now())
   updatedAt   temporal.updatedAt()
 
-  provider               IntegrationProvider    @relation(fields: [providerId], references: [id])
+  provider               IntegrationProvider    @relation(fields: [providerId], references: [id], onDelete: Restrict)
   integrationConnections IntegrationConnection[]
 
   @@unique([providerId, code])
+   @@unique([providerId, id])
 }
 
 model IntegrationConnectionStatus {
@@ -640,15 +744,18 @@ model IntegrationConnection {
   createdAt           DateTime    @default(now())
   updatedAt           temporal.updatedAt()
 
-  tenant      Tenant                    @relation(fields: [tenantId], references: [id])
-  provider    IntegrationProvider       @relation(fields: [providerId], references: [id])
-  channel     IntegrationChannel        @relation(fields: [channelId], references: [id])
-  status      IntegrationConnectionStatus @relation(fields: [statusId], references: [id])
+  tenant      Tenant                     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  provider    IntegrationProvider        @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  channel     IntegrationChannel         @relation(
+    fields: [providerId, channelId],
+    references: [providerId, id], onDelete: Restrict
+  )
+  status      IntegrationConnectionStatus @relation(fields: [statusId], references: [id],onDelete: Restrict)
 
-  credentials IntegrationConnectionCredential[]
-  webhooks    IntegrationWebhook[]
+  credentials   IntegrationConnectionCredential[]
+  webhooks      IntegrationWebhook[]
+  conversations SocialInboxConversation[]
 
-  @@unique([tenantId, providerId, channelId, externalAccountId])
   @@index([tenantId, statusId])
 }
 
@@ -661,7 +768,7 @@ model IntegrationConnectionCredential {
   createdAt            DateTime    @default(now())
   updatedAt            temporal.updatedAt()
 
-  connection IntegrationConnection @relation(fields: [connectionId], references: [id])
+  connection IntegrationConnection @relation(fields: [connectionId], references: [id],onDelete: Cascade)
 
   @@unique([connectionId, credentialType])
 }
@@ -687,12 +794,12 @@ model IntegrationWebhook {
   encryptedVerifyToken String?
   statusId             Uuid
   lastReceivedAt       DateTime?
-  lastError            String?
-  createdAt            DateTime    @default(now())
-  updatedAt            temporal.updatedAt()
+  lastError             String?
+  createdAt             DateTime    @default(now())
+  updatedAt             temporal.updatedAt()
 
-  connection IntegrationConnection @relation(fields: [connectionId], references: [id])
-  status     IntegrationWebhookStatus @relation(fields: [statusId], references: [id])
+  connection IntegrationConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  status     IntegrationWebhookStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
 
   events IntegrationWebhookEvent[]
 
@@ -725,9 +832,253 @@ model IntegrationWebhookEvent {
   createdAt       DateTime    @default(now())
   updatedAt       temporal.updatedAt()
 
-  webhook IntegrationWebhook           @relation(fields: [webhookId], references: [id])
-  status  IntegrationWebhookEventStatus @relation(fields: [statusId], references: [id])
+  webhook IntegrationWebhook           @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+  status  IntegrationWebhookEventStatus @relation(fields: [statusId], references: [id],onDelete: Restrict)
 
-  @@unique([webhookId, externalEventId])
   @@index([receivedAt])
+}
+
+// ======================================================
+// SOCIAL INBOX
+// ======================================================
+
+model SocialInboxConversation {
+  id                     Uuid      @id @default(uuid())
+  connectionId           Uuid
+  externalConversationId VarChar(255)?
+  contactId              Uuid?
+  statusId               Uuid
+  subject                VarChar(255)?
+  lastMessageAt          DateTime?
+  isArchived             Boolean   @default(false)
+  snoozedUntil           DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              temporal.updatedAt()
+
+  connection       IntegrationConnection         @relation(fields: [connectionId], references: [id],onDelete: Cascade)
+  contact          CrmContact?                   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  status           SocialInboxConversationStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  messages         SocialInboxMessage[]
+  assignments      SocialInboxConversationAssignment[]
+  conversationTags SocialInboxConversationTag[]
+  reads            SocialInboxConversationRead[]
+
+  @@index([connectionId])
+  @@index([contactId])
+  @@index([statusId])
+  @@index([lastMessageAt])
+  @@index([snoozedUntil])
+}
+
+model SocialInboxConversationStatus {
+  id            Uuid        @id @default(uuid())
+  code          VarChar(50) @unique
+  name          VarChar(100)
+  description   String?
+  isActive      Boolean     @default(true)
+  sortOrder     Int
+  createdAt     DateTime    @default(now())
+  updatedAt     temporal.updatedAt()
+
+  conversations SocialInboxConversation[]
+}
+
+model SocialInboxMessage {
+  id                Uuid        @id @default(uuid())
+  conversationId    Uuid
+  externalMessageId VarChar(255)?
+  replyToMessageId  Uuid?
+  direction         VarChar(20)
+  senderContactId   Uuid?
+  senderUserId      Uuid?
+  messageTypeId     Uuid
+  statusId          Uuid
+  content           String?
+  sentAt            DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         temporal.updatedAt()
+
+  conversation  SocialInboxConversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  replyTo       SocialInboxMessage?      @relation("MessageReplies", fields: [replyToMessageId], references: [id],onDelete: SetNull)
+  replies       SocialInboxMessage[]     @relation("MessageReplies")
+  senderContact CrmContact?              @relation(fields: [senderContactId], references: [id], onDelete: SetNull)
+  senderUser    User?                    @relation(fields: [senderUserId], references: [id],onDelete: SetNull)
+  messageType   SocialInboxMessageType   @relation(fields: [messageTypeId], references: [id], onDelete: Restrict)
+  status        SocialInboxMessageStatus @relation(fields: [statusId], references: [id], onDelete: Restrict)
+  readStates    SocialInboxConversationRead[]
+
+  @@index([conversationId])
+  @@index([senderContactId])
+  @@index([senderUserId])
+  @@index([statusId])
+  @@index([sentAt])
+}
+
+model SocialInboxMessageType {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  messages SocialInboxMessage[]
+}
+
+model SocialInboxMessageStatus {
+  id          Uuid        @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int
+  createdAt   DateTime    @default(now())
+  updatedAt   temporal.updatedAt()
+
+  messages SocialInboxMessage[]
+}
+
+model SocialInboxConversationAssignment {
+  id               Uuid      @id @default(uuid())
+  conversationId   Uuid
+  userId           Uuid
+  assignedByUserId Uuid?
+  assignedAt       DateTime
+  unassignedAt     DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        temporal.updatedAt()
+
+  conversation   SocialInboxConversation @relation(fields: [conversationId], references: [id],onDelete: Cascade)
+  user           User                    @relation("ConversationAssignments", fields: [userId], references: [id],onDelete: Cascade)
+  assignedByUser User?                   @relation("ConversationAssignmentsMade", fields: [assignedByUserId], references: [id],onDelete: SetNull)
+
+  @@index([conversationId])
+  @@index([userId])
+  
+}
+
+model SocialInboxConversationTag {
+  id             Uuid     @id @default(uuid())
+  conversationId Uuid
+  tagId          Uuid
+  createdAt      DateTime @default(now())
+
+  conversation SocialInboxConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  tag          CrmTag                 @relation(fields: [tagId], references: [id],onDelete: Cascade)
+
+  @@unique([conversationId, tagId])
+  @@index([tagId])
+}
+
+model SocialInboxConversationRead {
+  id                Uuid      @id @default(uuid())
+  conversationId    Uuid
+  userId            Uuid
+  lastReadMessageId Uuid?
+  lastReadAt        DateTime
+  createdAt         DateTime  @default(now())
+  updatedAt         temporal.updatedAt()
+
+  conversation    SocialInboxConversation @relation(fields: [conversationId], references: [id],onDelete: Cascade)
+  user            User                    @relation(fields: [userId], references: [id],onDelete: Cascade)
+  lastReadMessage SocialInboxMessage?     @relation(fields: [lastReadMessageId], references: [id], onDelete: SetNull)
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+  @@index([lastReadMessageId])
+}
+
+// ======================================================
+// AI
+// ======================================================
+
+model AiProvider {
+  id          Uuid       @id @default(uuid())
+  code        VarChar(50) @unique
+  name        VarChar(100)
+  description String?
+  isActive    Boolean    @default(true)
+  sortOrder   Int
+  createdAt   DateTime   @default(now())
+  updatedAt   temporal.updatedAt()
+
+  models AiModel[]
+}
+
+model AiModel {
+  id              Uuid       @id @default(uuid())
+  providerId      Uuid
+  code            VarChar(100)
+  providerModelId VarChar(255)
+  name            VarChar(150)
+  description     String?
+  createdAt       DateTime   @default(now())
+  updatedAt       temporal.updatedAt()
+
+  provider            AiProvider              @relation(
+    fields: [providerId],
+    references: [id],
+    onDelete: Restrict
+  )
+  agentConfigurations AiAgentConfiguration[]
+
+  @@unique([providerId, code])
+  @@unique([providerId, providerModelId])
+}
+
+model AiAgent {
+  id              Uuid       @id @default(uuid())
+  workspaceId     Uuid
+  name            VarChar(255)
+  code            VarChar(100)
+  description     String?
+  status          VarChar(50)
+  createdByUserId Uuid
+  createdAt       DateTime   @default(now())
+  updatedAt       temporal.updatedAt()
+
+  workspace     Workspace @relation(
+    fields: [workspaceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdByUser User @relation(
+    "AiAgentsCreated",
+    fields: [createdByUserId],
+    references: [id],
+    onDelete: Restrict
+  )
+
+  configuration AiAgentConfiguration?
+
+  @@unique([workspaceId, code])
+  @@index([workspaceId, status])
+}
+
+model AiAgentConfiguration {
+  id           Uuid      @id @default(uuid())
+  agentId      Uuid      @unique
+  modelId      Uuid
+  systemPrompt String?
+  temperature  Decimal?
+  maxTokens    Int?
+  createdAt    DateTime  @default(now())
+  updatedAt    temporal.updatedAt()
+
+  agent AiAgent @relation(
+    fields: [agentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  model AiModel @relation(
+    fields: [modelId],
+    references: [id],
+    onDelete: Restrict
+  )
+
+  @@index([modelId])
 }

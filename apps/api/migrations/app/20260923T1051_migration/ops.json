@@ -1,0 +1,3842 @@
+[
+  {
+    "id": "dropIndex.crmCompany.crmCompany_createdAt_idx_9575dbd7",
+    "label": "Drop index \"crmCompany_createdAt_idx_9575dbd7\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crmCompany_createdAt_idx_9575dbd7",
+        "table": "crmCompany"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crmCompany_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"crmCompany_createdAt_idx_9575dbd7\"",
+        "sql": "DROP INDEX \"public\".\"crmCompany_createdAt_idx_9575dbd7\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crmCompany_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.crmCompany.crmCompany_isActive_idx_77fe3ba1",
+    "label": "Drop index \"crmCompany_isActive_idx_77fe3ba1\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crmCompany_isActive_idx_77fe3ba1",
+        "table": "crmCompany"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crmCompany_isActive_idx_77fe3ba1\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_isActive_idx_77fe3ba1\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"crmCompany_isActive_idx_77fe3ba1\"",
+        "sql": "DROP INDEX \"public\".\"crmCompany_isActive_idx_77fe3ba1\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crmCompany_isActive_idx_77fe3ba1\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_isActive_idx_77fe3ba1\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropConstraint.integrationConnection.integrationConnection_channelId_fkey",
+    "label": "Drop constraint \"integrationConnection_channelId_fkey\" on \"integrationConnection\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "integrationConnection_channelId_fkey",
+        "table": "integrationConnection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"integrationConnection_channelId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_channelId_fkey",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"integrationConnection_channelId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"integrationConnection\" DROP CONSTRAINT \"integrationConnection_channelId_fkey\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"integrationConnection_channelId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_channelId_fkey",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.integrationConnection.integrationConnection_channelId_idx_166d3598",
+    "label": "Drop index \"integrationConnection_channelId_idx_166d3598\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "integrationConnection_channelId_idx_166d3598",
+        "table": "integrationConnection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"integrationConnection_channelId_idx_166d3598\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"integrationConnection_channelId_idx_166d3598\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"integrationConnection_channelId_idx_166d3598\"",
+        "sql": "DROP INDEX \"public\".\"integrationConnection_channelId_idx_166d3598\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"integrationConnection_channelId_idx_166d3598\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"integrationConnection_channelId_idx_166d3598\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropConstraint.integrationConnection.integrationConnection_tenantId_providerId_channelId_externalAccountId_key",
+    "label": "Drop constraint \"integrationConnection_tenantId_providerId_channelId_externalAccountId_key\" on \"integrationConnection\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "integrationConnection_tenantId_providerId_channelId_externalAccountId_key",
+        "table": "integrationConnection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"integrationConnection_tenantId_providerId_channelId_externalAccountId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_tenantId_providerId_channelId_externalAccountId_key",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"integrationConnection_tenantId_providerId_channelId_externalAccountId_key\"",
+        "sql": "ALTER TABLE \"public\".\"integrationConnection\" DROP CONSTRAINT \"integrationConnection_tenantId_providerId_channelId_externalAccountId_key\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"integrationConnection_tenantId_providerId_channelId_externalAccountId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_tenantId_providerId_channelId_externalAccountId_key",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropConstraint.integrationWebhookEvent.integrationWebhookEvent_webhookId_externalEventId_key",
+    "label": "Drop constraint \"integrationWebhookEvent_webhookId_externalEventId_key\" on \"integrationWebhookEvent\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "integrationWebhookEvent_webhookId_externalEventId_key",
+        "table": "integrationWebhookEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"integrationWebhookEvent_webhookId_externalEventId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationWebhookEvent_webhookId_externalEventId_key",
+          "public",
+          "\"public\".\"integrationWebhookEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop constraint \"integrationWebhookEvent_webhookId_externalEventId_key\"",
+        "sql": "ALTER TABLE \"public\".\"integrationWebhookEvent\" DROP CONSTRAINT \"integrationWebhookEvent_webhookId_externalEventId_key\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"integrationWebhookEvent_webhookId_externalEventId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationWebhookEvent_webhookId_externalEventId_key",
+          "public",
+          "\"public\".\"integrationWebhookEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.aiAgent",
+    "label": "Create table \"aiAgent\"",
+    "summary": "Creates table \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aiAgent\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aiAgent\"",
+        "sql": "CREATE TABLE \"public\".\"aiAgent\" (\n  \"code\" character varying(100) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"createdByUserId\" uuid NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"name\" character varying(255) NOT NULL,\n  \"status\" character varying(50) NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"workspaceId\" uuid NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aiAgent\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.aiAgentConfiguration",
+    "label": "Create table \"aiAgentConfiguration\"",
+    "summary": "Creates table \"aiAgentConfiguration\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aiAgentConfiguration"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aiAgentConfiguration\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aiAgentConfiguration\"",
+        "sql": "CREATE TABLE \"public\".\"aiAgentConfiguration\" (\n  \"agentId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"maxTokens\" int4,\n  \"modelId\" uuid NOT NULL,\n  \"systemPrompt\" text,\n  \"temperature\" numeric,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aiAgentConfiguration\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.aiModel",
+    "label": "Create table \"aiModel\"",
+    "summary": "Creates table \"aiModel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aiModel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aiModel\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aiModel\"",
+        "sql": "CREATE TABLE \"public\".\"aiModel\" (\n  \"code\" character varying(100) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"name\" character varying(150) NOT NULL,\n  \"providerId\" uuid NOT NULL,\n  \"providerModelId\" character varying(255) NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aiModel\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.aiProvider",
+    "label": "Create table \"aiProvider\"",
+    "summary": "Creates table \"aiProvider\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "aiProvider"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"aiProvider\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiProvider\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"aiProvider\"",
+        "sql": "CREATE TABLE \"public\".\"aiProvider\" (\n  \"code\" character varying(50) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" character varying(100) NOT NULL,\n  \"sortOrder\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"aiProvider\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiProvider\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.currency",
+    "label": "Create table \"currency\"",
+    "summary": "Creates table \"currency\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "currency"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"currency\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"currency\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"currency\"",
+        "sql": "CREATE TABLE \"public\".\"currency\" (\n  \"code\" character varying(3) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"decimalPlaces\" int4 NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" character varying(100) NOT NULL,\n  \"numericCode\" int4 NOT NULL,\n  \"sortOrder\" int4 NOT NULL,\n  \"symbol\" character varying(10) NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"currency\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"currency\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxConversation",
+    "label": "Create table \"socialInboxConversation\"",
+    "summary": "Creates table \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxConversation\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxConversation\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxConversation\" (\n  \"connectionId\" uuid NOT NULL,\n  \"contactId\" uuid,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"externalConversationId\" character varying(255),\n  \"id\" uuid NOT NULL,\n  \"isArchived\" bool DEFAULT false NOT NULL,\n  \"lastMessageAt\" timestamptz,\n  \"snoozedUntil\" timestamptz,\n  \"statusId\" uuid NOT NULL,\n  \"subject\" character varying(255),\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxConversation\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxConversationAssignment",
+    "label": "Create table \"socialInboxConversationAssignment\"",
+    "summary": "Creates table \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxConversationAssignment\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxConversationAssignment\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxConversationAssignment\" (\n  \"assignedAt\" timestamptz NOT NULL,\n  \"assignedByUserId\" uuid,\n  \"conversationId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"unassignedAt\" timestamptz,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" uuid NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxConversationAssignment\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxConversationRead",
+    "label": "Create table \"socialInboxConversationRead\"",
+    "summary": "Creates table \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxConversationRead\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxConversationRead\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxConversationRead\" (\n  \"conversationId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"lastReadAt\" timestamptz NOT NULL,\n  \"lastReadMessageId\" uuid,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" uuid NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxConversationRead\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxConversationStatus",
+    "label": "Create table \"socialInboxConversationStatus\"",
+    "summary": "Creates table \"socialInboxConversationStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxConversationStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxConversationStatus\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationStatus\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxConversationStatus\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxConversationStatus\" (\n  \"code\" character varying(50) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" character varying(100) NOT NULL,\n  \"sortOrder\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxConversationStatus\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationStatus\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxConversationTag",
+    "label": "Create table \"socialInboxConversationTag\"",
+    "summary": "Creates table \"socialInboxConversationTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxConversationTag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxConversationTag\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxConversationTag\" (\n  \"conversationId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"tagId\" uuid NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxConversationTag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxMessage",
+    "label": "Create table \"socialInboxMessage\"",
+    "summary": "Creates table \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxMessage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxMessage\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxMessage\" (\n  \"content\" text,\n  \"conversationId\" uuid NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"direction\" character varying(20) NOT NULL,\n  \"externalMessageId\" character varying(255),\n  \"id\" uuid NOT NULL,\n  \"messageTypeId\" uuid NOT NULL,\n  \"replyToMessageId\" uuid,\n  \"senderContactId\" uuid,\n  \"senderUserId\" uuid,\n  \"sentAt\" timestamptz,\n  \"statusId\" uuid NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxMessage\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxMessageStatus",
+    "label": "Create table \"socialInboxMessageStatus\"",
+    "summary": "Creates table \"socialInboxMessageStatus\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxMessageStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxMessageStatus\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessageStatus\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxMessageStatus\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxMessageStatus\" (\n  \"code\" character varying(50) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" character varying(100) NOT NULL,\n  \"sortOrder\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxMessageStatus\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessageStatus\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.socialInboxMessageType",
+    "label": "Create table \"socialInboxMessageType\"",
+    "summary": "Creates table \"socialInboxMessageType\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "socialInboxMessageType"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"socialInboxMessageType\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessageType\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"socialInboxMessageType\"",
+        "sql": "CREATE TABLE \"public\".\"socialInboxMessageType\" (\n  \"code\" character varying(50) NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" character varying(100) NOT NULL,\n  \"sortOrder\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"socialInboxMessageType\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessageType\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.timezone",
+    "label": "Create table \"timezone\"",
+    "summary": "Creates table \"timezone\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "timezone"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"timezone\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"timezone\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"timezone\"",
+        "sql": "CREATE TABLE \"public\".\"timezone\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"ianaName\" character varying(100) NOT NULL,\n  \"id\" uuid NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"regionId\" uuid,\n  \"sortOrder\" int4 NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"timezone\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"timezone\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiAgent.aiAgent_workspaceId_code_key",
+    "label": "Add unique constraint on \"aiAgent\" (workspaceId, code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiAgent_workspaceId_code_key",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiAgent_workspaceId_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_workspaceId_code_key",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiAgent_workspaceId_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgent\" ADD CONSTRAINT \"aiAgent_workspaceId_code_key\" UNIQUE (\"workspaceId\", \"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiAgent_workspaceId_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_workspaceId_code_key",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiAgentConfiguration.aiAgentConfiguration_agentId_key",
+    "label": "Add unique constraint on \"aiAgentConfiguration\" (agentId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiAgentConfiguration_agentId_key",
+        "table": "aiAgentConfiguration"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiAgentConfiguration_agentId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_agentId_key",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiAgentConfiguration_agentId_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgentConfiguration\" ADD CONSTRAINT \"aiAgentConfiguration_agentId_key\" UNIQUE (\"agentId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiAgentConfiguration_agentId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_agentId_key",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiModel.aiModel_providerId_code_key",
+    "label": "Add unique constraint on \"aiModel\" (providerId, code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiModel_providerId_code_key",
+        "table": "aiModel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiModel_providerId_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_code_key",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiModel_providerId_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiModel\" ADD CONSTRAINT \"aiModel_providerId_code_key\" UNIQUE (\"providerId\", \"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiModel_providerId_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_code_key",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiModel.aiModel_providerId_providerModelId_key",
+    "label": "Add unique constraint on \"aiModel\" (providerId, providerModelId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiModel_providerId_providerModelId_key",
+        "table": "aiModel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiModel_providerId_providerModelId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_providerModelId_key",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiModel_providerId_providerModelId_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiModel\" ADD CONSTRAINT \"aiModel_providerId_providerModelId_key\" UNIQUE (\"providerId\", \"providerModelId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiModel_providerId_providerModelId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_providerModelId_key",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.aiProvider.aiProvider_code_key",
+    "label": "Add unique constraint on \"aiProvider\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "aiProvider_code_key",
+        "table": "aiProvider"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"aiProvider_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiProvider_code_key",
+          "public",
+          "\"public\".\"aiProvider\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"aiProvider_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"aiProvider\" ADD CONSTRAINT \"aiProvider_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"aiProvider_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiProvider_code_key",
+          "public",
+          "\"public\".\"aiProvider\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.currency.currency_code_key",
+    "label": "Add unique constraint on \"currency\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "currency_code_key",
+        "table": "currency"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"currency_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "currency_code_key",
+          "public",
+          "\"public\".\"currency\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"currency_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"currency\" ADD CONSTRAINT \"currency_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"currency_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "currency_code_key",
+          "public",
+          "\"public\".\"currency\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.currency.currency_numericCode_key",
+    "label": "Add unique constraint on \"currency\" (numericCode)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "currency_numericCode_key",
+        "table": "currency"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"currency_numericCode_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "currency_numericCode_key",
+          "public",
+          "\"public\".\"currency\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"currency_numericCode_key\"",
+        "sql": "ALTER TABLE \"public\".\"currency\" ADD CONSTRAINT \"currency_numericCode_key\" UNIQUE (\"numericCode\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"currency_numericCode_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "currency_numericCode_key",
+          "public",
+          "\"public\".\"currency\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.integrationChannel.integrationChannel_providerId_id_key",
+    "label": "Add unique constraint on \"integrationChannel\" (providerId, id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "integrationChannel_providerId_id_key",
+        "table": "integrationChannel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"integrationChannel_providerId_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationChannel_providerId_id_key",
+          "public",
+          "\"public\".\"integrationChannel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"integrationChannel_providerId_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"integrationChannel\" ADD CONSTRAINT \"integrationChannel_providerId_id_key\" UNIQUE (\"providerId\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"integrationChannel_providerId_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationChannel_providerId_id_key",
+          "public",
+          "\"public\".\"integrationChannel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialInboxConversationRead.socialInboxConversationRead_conversationId_userId_key",
+    "label": "Add unique constraint on \"socialInboxConversationRead\" (conversationId, userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialInboxConversationRead_conversationId_userId_key",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialInboxConversationRead_conversationId_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_conversationId_userId_key",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialInboxConversationRead_conversationId_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationRead\" ADD CONSTRAINT \"socialInboxConversationRead_conversationId_userId_key\" UNIQUE (\"conversationId\", \"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialInboxConversationRead_conversationId_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_conversationId_userId_key",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialInboxConversationStatus.socialInboxConversationStatus_code_key",
+    "label": "Add unique constraint on \"socialInboxConversationStatus\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialInboxConversationStatus_code_key",
+        "table": "socialInboxConversationStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialInboxConversationStatus_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationStatus_code_key",
+          "public",
+          "\"public\".\"socialInboxConversationStatus\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialInboxConversationStatus_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationStatus\" ADD CONSTRAINT \"socialInboxConversationStatus_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialInboxConversationStatus_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationStatus_code_key",
+          "public",
+          "\"public\".\"socialInboxConversationStatus\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialInboxConversationTag.socialInboxConversationTag_conversationId_tagId_key",
+    "label": "Add unique constraint on \"socialInboxConversationTag\" (conversationId, tagId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialInboxConversationTag_conversationId_tagId_key",
+        "table": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialInboxConversationTag_conversationId_tagId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_conversationId_tagId_key",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialInboxConversationTag_conversationId_tagId_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationTag\" ADD CONSTRAINT \"socialInboxConversationTag_conversationId_tagId_key\" UNIQUE (\"conversationId\", \"tagId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialInboxConversationTag_conversationId_tagId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_conversationId_tagId_key",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialInboxMessageStatus.socialInboxMessageStatus_code_key",
+    "label": "Add unique constraint on \"socialInboxMessageStatus\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialInboxMessageStatus_code_key",
+        "table": "socialInboxMessageStatus"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialInboxMessageStatus_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessageStatus_code_key",
+          "public",
+          "\"public\".\"socialInboxMessageStatus\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialInboxMessageStatus_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessageStatus\" ADD CONSTRAINT \"socialInboxMessageStatus_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialInboxMessageStatus_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessageStatus_code_key",
+          "public",
+          "\"public\".\"socialInboxMessageStatus\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.socialInboxMessageType.socialInboxMessageType_code_key",
+    "label": "Add unique constraint on \"socialInboxMessageType\" (code)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "socialInboxMessageType_code_key",
+        "table": "socialInboxMessageType"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"socialInboxMessageType_code_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessageType_code_key",
+          "public",
+          "\"public\".\"socialInboxMessageType\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"socialInboxMessageType_code_key\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessageType\" ADD CONSTRAINT \"socialInboxMessageType_code_key\" UNIQUE (\"code\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"socialInboxMessageType_code_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessageType_code_key",
+          "public",
+          "\"public\".\"socialInboxMessageType\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.timezone.timezone_ianaName_key",
+    "label": "Add unique constraint on \"timezone\" (ianaName)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "timezone_ianaName_key",
+        "table": "timezone"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"timezone_ianaName_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "timezone_ianaName_key",
+          "public",
+          "\"public\".\"timezone\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"timezone_ianaName_key\"",
+        "sql": "ALTER TABLE \"public\".\"timezone\" ADD CONSTRAINT \"timezone_ianaName_key\" UNIQUE (\"ianaName\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"timezone_ianaName_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "timezone_ianaName_key",
+          "public",
+          "\"public\".\"timezone\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aiAgent.aiAgent_createdByUserId_idx_93e8a540",
+    "label": "Create index \"aiAgent_createdByUserId_idx_93e8a540\" on \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aiAgent_createdByUserId_idx_93e8a540",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aiAgent_createdByUserId_idx_93e8a540\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_createdByUserId_idx_93e8a540\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aiAgent_createdByUserId_idx_93e8a540\"",
+        "sql": "CREATE INDEX \"aiAgent_createdByUserId_idx_93e8a540\" ON \"public\".\"aiAgent\" (\"createdByUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aiAgent_createdByUserId_idx_93e8a540\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_createdByUserId_idx_93e8a540\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aiAgent.aiAgent_workspaceId_idx_ba65f874",
+    "label": "Create index \"aiAgent_workspaceId_idx_ba65f874\" on \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aiAgent_workspaceId_idx_ba65f874",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aiAgent_workspaceId_idx_ba65f874\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_workspaceId_idx_ba65f874\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aiAgent_workspaceId_idx_ba65f874\"",
+        "sql": "CREATE INDEX \"aiAgent_workspaceId_idx_ba65f874\" ON \"public\".\"aiAgent\" (\"workspaceId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aiAgent_workspaceId_idx_ba65f874\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_workspaceId_idx_ba65f874\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aiAgent.aiAgent_workspaceId_status_idx_76d68132",
+    "label": "Create index \"aiAgent_workspaceId_status_idx_76d68132\" on \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aiAgent_workspaceId_status_idx_76d68132",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aiAgent_workspaceId_status_idx_76d68132\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_workspaceId_status_idx_76d68132\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aiAgent_workspaceId_status_idx_76d68132\"",
+        "sql": "CREATE INDEX \"aiAgent_workspaceId_status_idx_76d68132\" ON \"public\".\"aiAgent\" (\"workspaceId\", \"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aiAgent_workspaceId_status_idx_76d68132\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgent_workspaceId_status_idx_76d68132\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aiAgentConfiguration.aiAgentConfiguration_modelId_idx_a8222b0e",
+    "label": "Create index \"aiAgentConfiguration_modelId_idx_a8222b0e\" on \"aiAgentConfiguration\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aiAgentConfiguration_modelId_idx_a8222b0e",
+        "table": "aiAgentConfiguration"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aiAgentConfiguration_modelId_idx_a8222b0e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgentConfiguration_modelId_idx_a8222b0e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aiAgentConfiguration_modelId_idx_a8222b0e\"",
+        "sql": "CREATE INDEX \"aiAgentConfiguration_modelId_idx_a8222b0e\" ON \"public\".\"aiAgentConfiguration\" (\"modelId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aiAgentConfiguration_modelId_idx_a8222b0e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiAgentConfiguration_modelId_idx_a8222b0e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.aiModel.aiModel_providerId_idx_d1904c54",
+    "label": "Create index \"aiModel_providerId_idx_d1904c54\" on \"aiModel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "aiModel_providerId_idx_d1904c54",
+        "table": "aiModel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"aiModel_providerId_idx_d1904c54\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiModel_providerId_idx_d1904c54\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"aiModel_providerId_idx_d1904c54\"",
+        "sql": "CREATE INDEX \"aiModel_providerId_idx_d1904c54\" ON \"public\".\"aiModel\" (\"providerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"aiModel_providerId_idx_d1904c54\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"aiModel_providerId_idx_d1904c54\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.crmCompany.crmCompany_workspaceId_createdAt_idx_5ff7e893",
+    "label": "Create index \"crmCompany_workspaceId_createdAt_idx_5ff7e893\" on \"crmCompany\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crmCompany_workspaceId_createdAt_idx_5ff7e893",
+        "table": "crmCompany"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crmCompany_workspaceId_createdAt_idx_5ff7e893\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_workspaceId_createdAt_idx_5ff7e893\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"crmCompany_workspaceId_createdAt_idx_5ff7e893\"",
+        "sql": "CREATE INDEX \"crmCompany_workspaceId_createdAt_idx_5ff7e893\" ON \"public\".\"crmCompany\" (\"workspaceId\", \"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crmCompany_workspaceId_createdAt_idx_5ff7e893\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_workspaceId_createdAt_idx_5ff7e893\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.crmCompany.crmCompany_workspaceId_isActive_idx_89addad9",
+    "label": "Create index \"crmCompany_workspaceId_isActive_idx_89addad9\" on \"crmCompany\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "crmCompany_workspaceId_isActive_idx_89addad9",
+        "table": "crmCompany"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"crmCompany_workspaceId_isActive_idx_89addad9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_workspaceId_isActive_idx_89addad9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"crmCompany_workspaceId_isActive_idx_89addad9\"",
+        "sql": "CREATE INDEX \"crmCompany_workspaceId_isActive_idx_89addad9\" ON \"public\".\"crmCompany\" (\"workspaceId\", \"isActive\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"crmCompany_workspaceId_isActive_idx_89addad9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"crmCompany_workspaceId_isActive_idx_89addad9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.integrationConnection.integrationConnection_providerId_channelId_idx_aa6c393b",
+    "label": "Create index \"integrationConnection_providerId_channelId_idx_aa6c393b\" on \"integrationConnection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "integrationConnection_providerId_channelId_idx_aa6c393b",
+        "table": "integrationConnection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"integrationConnection_providerId_channelId_idx_aa6c393b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"integrationConnection_providerId_channelId_idx_aa6c393b\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"integrationConnection_providerId_channelId_idx_aa6c393b\"",
+        "sql": "CREATE INDEX \"integrationConnection_providerId_channelId_idx_aa6c393b\" ON \"public\".\"integrationConnection\" (\"providerId\", \"channelId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"integrationConnection_providerId_channelId_idx_aa6c393b\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"integrationConnection_providerId_channelId_idx_aa6c393b\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversation.socialInboxConversation_connectionId_idx_b3eeb6ac",
+    "label": "Create index \"socialInboxConversation_connectionId_idx_b3eeb6ac\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversation_connectionId_idx_b3eeb6ac",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversation_connectionId_idx_b3eeb6ac\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_connectionId_idx_b3eeb6ac\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversation_connectionId_idx_b3eeb6ac\"",
+        "sql": "CREATE INDEX \"socialInboxConversation_connectionId_idx_b3eeb6ac\" ON \"public\".\"socialInboxConversation\" (\"connectionId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversation_connectionId_idx_b3eeb6ac\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_connectionId_idx_b3eeb6ac\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversation.socialInboxConversation_contactId_idx_ec98db2a",
+    "label": "Create index \"socialInboxConversation_contactId_idx_ec98db2a\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversation_contactId_idx_ec98db2a",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversation_contactId_idx_ec98db2a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_contactId_idx_ec98db2a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversation_contactId_idx_ec98db2a\"",
+        "sql": "CREATE INDEX \"socialInboxConversation_contactId_idx_ec98db2a\" ON \"public\".\"socialInboxConversation\" (\"contactId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversation_contactId_idx_ec98db2a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_contactId_idx_ec98db2a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversation.socialInboxConversation_lastMessageAt_idx_150705d0",
+    "label": "Create index \"socialInboxConversation_lastMessageAt_idx_150705d0\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversation_lastMessageAt_idx_150705d0",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversation_lastMessageAt_idx_150705d0\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_lastMessageAt_idx_150705d0\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversation_lastMessageAt_idx_150705d0\"",
+        "sql": "CREATE INDEX \"socialInboxConversation_lastMessageAt_idx_150705d0\" ON \"public\".\"socialInboxConversation\" (\"lastMessageAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversation_lastMessageAt_idx_150705d0\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_lastMessageAt_idx_150705d0\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversation.socialInboxConversation_snoozedUntil_idx_6c34833f",
+    "label": "Create index \"socialInboxConversation_snoozedUntil_idx_6c34833f\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversation_snoozedUntil_idx_6c34833f",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversation_snoozedUntil_idx_6c34833f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_snoozedUntil_idx_6c34833f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversation_snoozedUntil_idx_6c34833f\"",
+        "sql": "CREATE INDEX \"socialInboxConversation_snoozedUntil_idx_6c34833f\" ON \"public\".\"socialInboxConversation\" (\"snoozedUntil\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversation_snoozedUntil_idx_6c34833f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_snoozedUntil_idx_6c34833f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversation.socialInboxConversation_statusId_idx_e5a44bce",
+    "label": "Create index \"socialInboxConversation_statusId_idx_e5a44bce\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversation_statusId_idx_e5a44bce",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversation_statusId_idx_e5a44bce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_statusId_idx_e5a44bce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversation_statusId_idx_e5a44bce\"",
+        "sql": "CREATE INDEX \"socialInboxConversation_statusId_idx_e5a44bce\" ON \"public\".\"socialInboxConversation\" (\"statusId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversation_statusId_idx_e5a44bce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversation_statusId_idx_e5a44bce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationAssignment.socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9",
+    "label": "Create index \"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\"",
+        "sql": "CREATE INDEX \"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\" ON \"public\".\"socialInboxConversationAssignment\" (\"assignedByUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_assignedByUserId_idx_2ceeeec9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationAssignment.socialInboxConversationAssignment_conversationId_idx_669215a6",
+    "label": "Create index \"socialInboxConversationAssignment_conversationId_idx_669215a6\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationAssignment_conversationId_idx_669215a6",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationAssignment_conversationId_idx_669215a6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_conversationId_idx_669215a6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationAssignment_conversationId_idx_669215a6\"",
+        "sql": "CREATE INDEX \"socialInboxConversationAssignment_conversationId_idx_669215a6\" ON \"public\".\"socialInboxConversationAssignment\" (\"conversationId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationAssignment_conversationId_idx_669215a6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_conversationId_idx_669215a6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationAssignment.socialInboxConversationAssignment_userId_idx_a489d58a",
+    "label": "Create index \"socialInboxConversationAssignment_userId_idx_a489d58a\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationAssignment_userId_idx_a489d58a",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationAssignment_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationAssignment_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"socialInboxConversationAssignment_userId_idx_a489d58a\" ON \"public\".\"socialInboxConversationAssignment\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationAssignment_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationAssignment_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationRead.socialInboxConversationRead_conversationId_idx_669215a6",
+    "label": "Create index \"socialInboxConversationRead_conversationId_idx_669215a6\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationRead_conversationId_idx_669215a6",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationRead_conversationId_idx_669215a6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_conversationId_idx_669215a6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationRead_conversationId_idx_669215a6\"",
+        "sql": "CREATE INDEX \"socialInboxConversationRead_conversationId_idx_669215a6\" ON \"public\".\"socialInboxConversationRead\" (\"conversationId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationRead_conversationId_idx_669215a6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_conversationId_idx_669215a6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationRead.socialInboxConversationRead_lastReadMessageId_idx_87f919b1",
+    "label": "Create index \"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationRead_lastReadMessageId_idx_87f919b1",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\"",
+        "sql": "CREATE INDEX \"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\" ON \"public\".\"socialInboxConversationRead\" (\"lastReadMessageId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_lastReadMessageId_idx_87f919b1\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationRead.socialInboxConversationRead_userId_idx_a489d58a",
+    "label": "Create index \"socialInboxConversationRead_userId_idx_a489d58a\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationRead_userId_idx_a489d58a",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationRead_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationRead_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"socialInboxConversationRead_userId_idx_a489d58a\" ON \"public\".\"socialInboxConversationRead\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationRead_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationRead_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationTag.socialInboxConversationTag_conversationId_idx_669215a6",
+    "label": "Create index \"socialInboxConversationTag_conversationId_idx_669215a6\" on \"socialInboxConversationTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationTag_conversationId_idx_669215a6",
+        "table": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationTag_conversationId_idx_669215a6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag_conversationId_idx_669215a6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationTag_conversationId_idx_669215a6\"",
+        "sql": "CREATE INDEX \"socialInboxConversationTag_conversationId_idx_669215a6\" ON \"public\".\"socialInboxConversationTag\" (\"conversationId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationTag_conversationId_idx_669215a6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag_conversationId_idx_669215a6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxConversationTag.socialInboxConversationTag_tagId_idx_86854244",
+    "label": "Create index \"socialInboxConversationTag_tagId_idx_86854244\" on \"socialInboxConversationTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxConversationTag_tagId_idx_86854244",
+        "table": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxConversationTag_tagId_idx_86854244\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag_tagId_idx_86854244\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxConversationTag_tagId_idx_86854244\"",
+        "sql": "CREATE INDEX \"socialInboxConversationTag_tagId_idx_86854244\" ON \"public\".\"socialInboxConversationTag\" (\"tagId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxConversationTag_tagId_idx_86854244\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxConversationTag_tagId_idx_86854244\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_conversationId_idx_669215a6",
+    "label": "Create index \"socialInboxMessage_conversationId_idx_669215a6\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_conversationId_idx_669215a6",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_conversationId_idx_669215a6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_conversationId_idx_669215a6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_conversationId_idx_669215a6\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_conversationId_idx_669215a6\" ON \"public\".\"socialInboxMessage\" (\"conversationId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_conversationId_idx_669215a6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_conversationId_idx_669215a6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_messageTypeId_idx_4546e6b0",
+    "label": "Create index \"socialInboxMessage_messageTypeId_idx_4546e6b0\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_messageTypeId_idx_4546e6b0",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_messageTypeId_idx_4546e6b0\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_messageTypeId_idx_4546e6b0\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_messageTypeId_idx_4546e6b0\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_messageTypeId_idx_4546e6b0\" ON \"public\".\"socialInboxMessage\" (\"messageTypeId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_messageTypeId_idx_4546e6b0\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_messageTypeId_idx_4546e6b0\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_replyToMessageId_idx_dcef6925",
+    "label": "Create index \"socialInboxMessage_replyToMessageId_idx_dcef6925\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_replyToMessageId_idx_dcef6925",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_replyToMessageId_idx_dcef6925\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_replyToMessageId_idx_dcef6925\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_replyToMessageId_idx_dcef6925\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_replyToMessageId_idx_dcef6925\" ON \"public\".\"socialInboxMessage\" (\"replyToMessageId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_replyToMessageId_idx_dcef6925\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_replyToMessageId_idx_dcef6925\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_senderContactId_idx_5e827452",
+    "label": "Create index \"socialInboxMessage_senderContactId_idx_5e827452\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_senderContactId_idx_5e827452",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_senderContactId_idx_5e827452\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_senderContactId_idx_5e827452\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_senderContactId_idx_5e827452\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_senderContactId_idx_5e827452\" ON \"public\".\"socialInboxMessage\" (\"senderContactId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_senderContactId_idx_5e827452\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_senderContactId_idx_5e827452\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_senderUserId_idx_64078a57",
+    "label": "Create index \"socialInboxMessage_senderUserId_idx_64078a57\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_senderUserId_idx_64078a57",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_senderUserId_idx_64078a57\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_senderUserId_idx_64078a57\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_senderUserId_idx_64078a57\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_senderUserId_idx_64078a57\" ON \"public\".\"socialInboxMessage\" (\"senderUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_senderUserId_idx_64078a57\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_senderUserId_idx_64078a57\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_sentAt_idx_143b1b4c",
+    "label": "Create index \"socialInboxMessage_sentAt_idx_143b1b4c\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_sentAt_idx_143b1b4c",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_sentAt_idx_143b1b4c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_sentAt_idx_143b1b4c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_sentAt_idx_143b1b4c\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_sentAt_idx_143b1b4c\" ON \"public\".\"socialInboxMessage\" (\"sentAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_sentAt_idx_143b1b4c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_sentAt_idx_143b1b4c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.socialInboxMessage.socialInboxMessage_statusId_idx_e5a44bce",
+    "label": "Create index \"socialInboxMessage_statusId_idx_e5a44bce\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "socialInboxMessage_statusId_idx_e5a44bce",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"socialInboxMessage_statusId_idx_e5a44bce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_statusId_idx_e5a44bce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"socialInboxMessage_statusId_idx_e5a44bce\"",
+        "sql": "CREATE INDEX \"socialInboxMessage_statusId_idx_e5a44bce\" ON \"public\".\"socialInboxMessage\" (\"statusId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"socialInboxMessage_statusId_idx_e5a44bce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"socialInboxMessage_statusId_idx_e5a44bce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.tenant.tenant_defaultCurrencyId_idx_afb00d5c",
+    "label": "Create index \"tenant_defaultCurrencyId_idx_afb00d5c\" on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "tenant_defaultCurrencyId_idx_afb00d5c",
+        "table": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"tenant_defaultCurrencyId_idx_afb00d5c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant_defaultCurrencyId_idx_afb00d5c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"tenant_defaultCurrencyId_idx_afb00d5c\"",
+        "sql": "CREATE INDEX \"tenant_defaultCurrencyId_idx_afb00d5c\" ON \"public\".\"tenant\" (\"defaultCurrencyId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"tenant_defaultCurrencyId_idx_afb00d5c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant_defaultCurrencyId_idx_afb00d5c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.tenant.tenant_defaultTimezoneId_idx_2072c5de",
+    "label": "Create index \"tenant_defaultTimezoneId_idx_2072c5de\" on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "tenant_defaultTimezoneId_idx_2072c5de",
+        "table": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"tenant_defaultTimezoneId_idx_2072c5de\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant_defaultTimezoneId_idx_2072c5de\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"tenant_defaultTimezoneId_idx_2072c5de\"",
+        "sql": "CREATE INDEX \"tenant_defaultTimezoneId_idx_2072c5de\" ON \"public\".\"tenant\" (\"defaultTimezoneId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"tenant_defaultTimezoneId_idx_2072c5de\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"tenant_defaultTimezoneId_idx_2072c5de\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.timezone.timezone_regionId_idx_f44e49e6",
+    "label": "Create index \"timezone_regionId_idx_f44e49e6\" on \"timezone\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "timezone_regionId_idx_f44e49e6",
+        "table": "timezone"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"timezone_regionId_idx_f44e49e6\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"timezone_regionId_idx_f44e49e6\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"timezone_regionId_idx_f44e49e6\"",
+        "sql": "CREATE INDEX \"timezone_regionId_idx_f44e49e6\" ON \"public\".\"timezone\" (\"regionId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"timezone_regionId_idx_f44e49e6\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"timezone_regionId_idx_f44e49e6\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.workspace.workspace_defaultCurrencyId_idx_afb00d5c",
+    "label": "Create index \"workspace_defaultCurrencyId_idx_afb00d5c\" on \"workspace\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "workspace_defaultCurrencyId_idx_afb00d5c",
+        "table": "workspace"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"workspace_defaultCurrencyId_idx_afb00d5c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"workspace_defaultCurrencyId_idx_afb00d5c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"workspace_defaultCurrencyId_idx_afb00d5c\"",
+        "sql": "CREATE INDEX \"workspace_defaultCurrencyId_idx_afb00d5c\" ON \"public\".\"workspace\" (\"defaultCurrencyId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"workspace_defaultCurrencyId_idx_afb00d5c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"workspace_defaultCurrencyId_idx_afb00d5c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.workspace.workspace_defaultTimezoneId_idx_2072c5de",
+    "label": "Create index \"workspace_defaultTimezoneId_idx_2072c5de\" on \"workspace\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "workspace_defaultTimezoneId_idx_2072c5de",
+        "table": "workspace"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"workspace_defaultTimezoneId_idx_2072c5de\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"workspace_defaultTimezoneId_idx_2072c5de\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"workspace_defaultTimezoneId_idx_2072c5de\"",
+        "sql": "CREATE INDEX \"workspace_defaultTimezoneId_idx_2072c5de\" ON \"public\".\"workspace\" (\"defaultTimezoneId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"workspace_defaultTimezoneId_idx_2072c5de\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"workspace_defaultTimezoneId_idx_2072c5de\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aiAgent.aiAgent_workspaceId_fkey",
+    "label": "Add foreign key \"aiAgent_workspaceId_fkey\" on \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aiAgent_workspaceId_fkey",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aiAgent_workspaceId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_workspaceId_fkey",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aiAgent_workspaceId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgent\"\nADD CONSTRAINT \"aiAgent_workspaceId_fkey\"\nFOREIGN KEY (\"workspaceId\")\nREFERENCES \"public\".\"workspace\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aiAgent_workspaceId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_workspaceId_fkey",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aiAgent.aiAgent_createdByUserId_fkey",
+    "label": "Add foreign key \"aiAgent_createdByUserId_fkey\" on \"aiAgent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aiAgent_createdByUserId_fkey",
+        "table": "aiAgent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aiAgent_createdByUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_createdByUserId_fkey",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aiAgent_createdByUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgent\"\nADD CONSTRAINT \"aiAgent_createdByUserId_fkey\"\nFOREIGN KEY (\"createdByUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aiAgent_createdByUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgent_createdByUserId_fkey",
+          "public",
+          "\"public\".\"aiAgent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aiAgentConfiguration.aiAgentConfiguration_agentId_fkey",
+    "label": "Add foreign key \"aiAgentConfiguration_agentId_fkey\" on \"aiAgentConfiguration\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aiAgentConfiguration_agentId_fkey",
+        "table": "aiAgentConfiguration"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aiAgentConfiguration_agentId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_agentId_fkey",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aiAgentConfiguration_agentId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgentConfiguration\"\nADD CONSTRAINT \"aiAgentConfiguration_agentId_fkey\"\nFOREIGN KEY (\"agentId\")\nREFERENCES \"public\".\"aiAgent\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aiAgentConfiguration_agentId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_agentId_fkey",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aiAgentConfiguration.aiAgentConfiguration_modelId_fkey",
+    "label": "Add foreign key \"aiAgentConfiguration_modelId_fkey\" on \"aiAgentConfiguration\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aiAgentConfiguration_modelId_fkey",
+        "table": "aiAgentConfiguration"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aiAgentConfiguration_modelId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_modelId_fkey",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aiAgentConfiguration_modelId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aiAgentConfiguration\"\nADD CONSTRAINT \"aiAgentConfiguration_modelId_fkey\"\nFOREIGN KEY (\"modelId\")\nREFERENCES \"public\".\"aiModel\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aiAgentConfiguration_modelId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiAgentConfiguration_modelId_fkey",
+          "public",
+          "\"public\".\"aiAgentConfiguration\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.aiModel.aiModel_providerId_fkey",
+    "label": "Add foreign key \"aiModel_providerId_fkey\" on \"aiModel\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "aiModel_providerId_fkey",
+        "table": "aiModel"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"aiModel_providerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_fkey",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"aiModel_providerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"aiModel\"\nADD CONSTRAINT \"aiModel_providerId_fkey\"\nFOREIGN KEY (\"providerId\")\nREFERENCES \"public\".\"aiProvider\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"aiModel_providerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "aiModel_providerId_fkey",
+          "public",
+          "\"public\".\"aiModel\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.integrationConnection.integrationConnection_providerId_channelId_fkey",
+    "label": "Add foreign key \"integrationConnection_providerId_channelId_fkey\" on \"integrationConnection\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "integrationConnection_providerId_channelId_fkey",
+        "table": "integrationConnection"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"integrationConnection_providerId_channelId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_providerId_channelId_fkey",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"integrationConnection_providerId_channelId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"integrationConnection\"\nADD CONSTRAINT \"integrationConnection_providerId_channelId_fkey\"\nFOREIGN KEY (\"providerId\", \"channelId\")\nREFERENCES \"public\".\"integrationChannel\" (\"providerId\", \"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"integrationConnection_providerId_channelId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "integrationConnection_providerId_channelId_fkey",
+          "public",
+          "\"public\".\"integrationConnection\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversation.socialInboxConversation_connectionId_fkey",
+    "label": "Add foreign key \"socialInboxConversation_connectionId_fkey\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversation_connectionId_fkey",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversation_connectionId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_connectionId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversation_connectionId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversation\"\nADD CONSTRAINT \"socialInboxConversation_connectionId_fkey\"\nFOREIGN KEY (\"connectionId\")\nREFERENCES \"public\".\"integrationConnection\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversation_connectionId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_connectionId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversation.socialInboxConversation_contactId_fkey",
+    "label": "Add foreign key \"socialInboxConversation_contactId_fkey\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversation_contactId_fkey",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversation_contactId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_contactId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversation_contactId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversation\"\nADD CONSTRAINT \"socialInboxConversation_contactId_fkey\"\nFOREIGN KEY (\"contactId\")\nREFERENCES \"public\".\"crmContact\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversation_contactId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_contactId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversation.socialInboxConversation_statusId_fkey",
+    "label": "Add foreign key \"socialInboxConversation_statusId_fkey\" on \"socialInboxConversation\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversation_statusId_fkey",
+        "table": "socialInboxConversation"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversation_statusId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_statusId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversation_statusId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversation\"\nADD CONSTRAINT \"socialInboxConversation_statusId_fkey\"\nFOREIGN KEY (\"statusId\")\nREFERENCES \"public\".\"socialInboxConversationStatus\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversation_statusId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversation_statusId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversation\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationAssignment.socialInboxConversationAssignment_conversationId_fkey",
+    "label": "Add foreign key \"socialInboxConversationAssignment_conversationId_fkey\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationAssignment_conversationId_fkey",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationAssignment_conversationId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationAssignment_conversationId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationAssignment\"\nADD CONSTRAINT \"socialInboxConversationAssignment_conversationId_fkey\"\nFOREIGN KEY (\"conversationId\")\nREFERENCES \"public\".\"socialInboxConversation\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationAssignment_conversationId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationAssignment.socialInboxConversationAssignment_userId_fkey",
+    "label": "Add foreign key \"socialInboxConversationAssignment_userId_fkey\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationAssignment_userId_fkey",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationAssignment_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_userId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationAssignment_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationAssignment\"\nADD CONSTRAINT \"socialInboxConversationAssignment_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationAssignment_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_userId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationAssignment.socialInboxConversationAssignment_assignedByUserId_fkey",
+    "label": "Add foreign key \"socialInboxConversationAssignment_assignedByUserId_fkey\" on \"socialInboxConversationAssignment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationAssignment_assignedByUserId_fkey",
+        "table": "socialInboxConversationAssignment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationAssignment_assignedByUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_assignedByUserId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationAssignment_assignedByUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationAssignment\"\nADD CONSTRAINT \"socialInboxConversationAssignment_assignedByUserId_fkey\"\nFOREIGN KEY (\"assignedByUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationAssignment_assignedByUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationAssignment_assignedByUserId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationAssignment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationRead.socialInboxConversationRead_conversationId_fkey",
+    "label": "Add foreign key \"socialInboxConversationRead_conversationId_fkey\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationRead_conversationId_fkey",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationRead_conversationId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationRead_conversationId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationRead\"\nADD CONSTRAINT \"socialInboxConversationRead_conversationId_fkey\"\nFOREIGN KEY (\"conversationId\")\nREFERENCES \"public\".\"socialInboxConversation\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationRead_conversationId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationRead.socialInboxConversationRead_userId_fkey",
+    "label": "Add foreign key \"socialInboxConversationRead_userId_fkey\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationRead_userId_fkey",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationRead_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_userId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationRead_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationRead\"\nADD CONSTRAINT \"socialInboxConversationRead_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationRead_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_userId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationRead.socialInboxConversationRead_lastReadMessageId_fkey",
+    "label": "Add foreign key \"socialInboxConversationRead_lastReadMessageId_fkey\" on \"socialInboxConversationRead\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationRead_lastReadMessageId_fkey",
+        "table": "socialInboxConversationRead"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationRead_lastReadMessageId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_lastReadMessageId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationRead_lastReadMessageId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationRead\"\nADD CONSTRAINT \"socialInboxConversationRead_lastReadMessageId_fkey\"\nFOREIGN KEY (\"lastReadMessageId\")\nREFERENCES \"public\".\"socialInboxMessage\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationRead_lastReadMessageId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationRead_lastReadMessageId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationRead\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationTag.socialInboxConversationTag_conversationId_fkey",
+    "label": "Add foreign key \"socialInboxConversationTag_conversationId_fkey\" on \"socialInboxConversationTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationTag_conversationId_fkey",
+        "table": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationTag_conversationId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationTag_conversationId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationTag\"\nADD CONSTRAINT \"socialInboxConversationTag_conversationId_fkey\"\nFOREIGN KEY (\"conversationId\")\nREFERENCES \"public\".\"socialInboxConversation\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationTag_conversationId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxConversationTag.socialInboxConversationTag_tagId_fkey",
+    "label": "Add foreign key \"socialInboxConversationTag_tagId_fkey\" on \"socialInboxConversationTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxConversationTag_tagId_fkey",
+        "table": "socialInboxConversationTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxConversationTag_tagId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_tagId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxConversationTag_tagId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxConversationTag\"\nADD CONSTRAINT \"socialInboxConversationTag_tagId_fkey\"\nFOREIGN KEY (\"tagId\")\nREFERENCES \"public\".\"crmTag\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxConversationTag_tagId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxConversationTag_tagId_fkey",
+          "public",
+          "\"public\".\"socialInboxConversationTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_conversationId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_conversationId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_conversationId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_conversationId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_conversationId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_conversationId_fkey\"\nFOREIGN KEY (\"conversationId\")\nREFERENCES \"public\".\"socialInboxConversation\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_conversationId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_conversationId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_replyToMessageId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_replyToMessageId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_replyToMessageId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_replyToMessageId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_replyToMessageId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_replyToMessageId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_replyToMessageId_fkey\"\nFOREIGN KEY (\"replyToMessageId\")\nREFERENCES \"public\".\"socialInboxMessage\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_replyToMessageId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_replyToMessageId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_senderContactId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_senderContactId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_senderContactId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_senderContactId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_senderContactId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_senderContactId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_senderContactId_fkey\"\nFOREIGN KEY (\"senderContactId\")\nREFERENCES \"public\".\"crmContact\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_senderContactId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_senderContactId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_senderUserId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_senderUserId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_senderUserId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_senderUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_senderUserId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_senderUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_senderUserId_fkey\"\nFOREIGN KEY (\"senderUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_senderUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_senderUserId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_messageTypeId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_messageTypeId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_messageTypeId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_messageTypeId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_messageTypeId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_messageTypeId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_messageTypeId_fkey\"\nFOREIGN KEY (\"messageTypeId\")\nREFERENCES \"public\".\"socialInboxMessageType\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_messageTypeId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_messageTypeId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.socialInboxMessage.socialInboxMessage_statusId_fkey",
+    "label": "Add foreign key \"socialInboxMessage_statusId_fkey\" on \"socialInboxMessage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "socialInboxMessage_statusId_fkey",
+        "table": "socialInboxMessage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"socialInboxMessage_statusId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_statusId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"socialInboxMessage_statusId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"socialInboxMessage\"\nADD CONSTRAINT \"socialInboxMessage_statusId_fkey\"\nFOREIGN KEY (\"statusId\")\nREFERENCES \"public\".\"socialInboxMessageStatus\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"socialInboxMessage_statusId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "socialInboxMessage_statusId_fkey",
+          "public",
+          "\"public\".\"socialInboxMessage\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.tenant.tenant_defaultCurrencyId_fkey",
+    "label": "Add foreign key \"tenant_defaultCurrencyId_fkey\" on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "tenant_defaultCurrencyId_fkey",
+        "table": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"tenant_defaultCurrencyId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "tenant_defaultCurrencyId_fkey",
+          "public",
+          "\"public\".\"tenant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"tenant_defaultCurrencyId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"tenant\"\nADD CONSTRAINT \"tenant_defaultCurrencyId_fkey\"\nFOREIGN KEY (\"defaultCurrencyId\")\nREFERENCES \"public\".\"currency\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"tenant_defaultCurrencyId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "tenant_defaultCurrencyId_fkey",
+          "public",
+          "\"public\".\"tenant\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.timezone.timezone_regionId_fkey",
+    "label": "Add foreign key \"timezone_regionId_fkey\" on \"timezone\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "timezone_regionId_fkey",
+        "table": "timezone"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"timezone_regionId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "timezone_regionId_fkey",
+          "public",
+          "\"public\".\"timezone\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"timezone_regionId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"timezone\"\nADD CONSTRAINT \"timezone_regionId_fkey\"\nFOREIGN KEY (\"regionId\")\nREFERENCES \"public\".\"region\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"timezone_regionId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "timezone_regionId_fkey",
+          "public",
+          "\"public\".\"timezone\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.tenant.tenant_defaultTimezoneId_fkey",
+    "label": "Add foreign key \"tenant_defaultTimezoneId_fkey\" on \"tenant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "tenant_defaultTimezoneId_fkey",
+        "table": "tenant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"tenant_defaultTimezoneId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "tenant_defaultTimezoneId_fkey",
+          "public",
+          "\"public\".\"tenant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"tenant_defaultTimezoneId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"tenant\"\nADD CONSTRAINT \"tenant_defaultTimezoneId_fkey\"\nFOREIGN KEY (\"defaultTimezoneId\")\nREFERENCES \"public\".\"timezone\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"tenant_defaultTimezoneId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "tenant_defaultTimezoneId_fkey",
+          "public",
+          "\"public\".\"tenant\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.workspace.workspace_defaultCurrencyId_fkey",
+    "label": "Add foreign key \"workspace_defaultCurrencyId_fkey\" on \"workspace\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "workspace_defaultCurrencyId_fkey",
+        "table": "workspace"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"workspace_defaultCurrencyId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "workspace_defaultCurrencyId_fkey",
+          "public",
+          "\"public\".\"workspace\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"workspace_defaultCurrencyId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"workspace\"\nADD CONSTRAINT \"workspace_defaultCurrencyId_fkey\"\nFOREIGN KEY (\"defaultCurrencyId\")\nREFERENCES \"public\".\"currency\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"workspace_defaultCurrencyId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "workspace_defaultCurrencyId_fkey",
+          "public",
+          "\"public\".\"workspace\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.workspace.workspace_defaultTimezoneId_fkey",
+    "label": "Add foreign key \"workspace_defaultTimezoneId_fkey\" on \"workspace\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "workspace_defaultTimezoneId_fkey",
+        "table": "workspace"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"workspace_defaultTimezoneId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "workspace_defaultTimezoneId_fkey",
+          "public",
+          "\"public\".\"workspace\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"workspace_defaultTimezoneId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"workspace\"\nADD CONSTRAINT \"workspace_defaultTimezoneId_fkey\"\nFOREIGN KEY (\"defaultTimezoneId\")\nREFERENCES \"public\".\"timezone\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"workspace_defaultTimezoneId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "workspace_defaultTimezoneId_fkey",
+          "public",
+          "\"public\".\"workspace\""
+        ]
+      }
+    ]
+  }
+]
