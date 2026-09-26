@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import 'temporal-polyfill/full/global';
+
 import postgres from '@prisma/orm-postgres/runtime';
 
 import contractJson from './contract.json' with { type: 'json' };
