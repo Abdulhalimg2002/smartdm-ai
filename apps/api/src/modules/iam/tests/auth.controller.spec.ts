@@ -1,3 +1,4 @@
+
 import {
   describe,
   expect,
@@ -21,7 +22,17 @@ import {
   InvalidCredentialsError,
 } from '../application/errors/invalid-credentials.error.js';
 
+import type {
+  ILogoutService,
+} from '../application/services/logout.service.js';
+
 describe('IAM AuthController', () => {
+  const logoutService = {
+    logout: jest.fn<
+      (token: string) => Promise<void>
+    >(),
+  } as unknown as ILogoutService;
+
   it('should login successfully', async () => {
     const user = User.createNew({
       id: 'user-1',
@@ -51,7 +62,10 @@ describe('IAM AuthController', () => {
     } as unknown as AuthService;
 
     const controller =
-      new AuthController(authService);
+      new AuthController(
+        authService,
+        logoutService,
+      );
 
     const result =
       await controller.login({
@@ -107,7 +121,10 @@ describe('IAM AuthController', () => {
     } as unknown as AuthService;
 
     const controller =
-      new AuthController(authService);
+      new AuthController(
+        authService,
+        logoutService,
+      );
 
     await expect(
       controller.login({
