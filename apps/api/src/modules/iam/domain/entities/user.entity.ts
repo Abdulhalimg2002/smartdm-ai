@@ -43,6 +43,10 @@ export class User {
       updatedAt: now,
     });
   }
+  markLogin(): void {
+  this.props.lastLoginAt = new Date();
+  this.props.updatedAt = new Date();
+}
 
   get id(): string {
     return this.props.id;

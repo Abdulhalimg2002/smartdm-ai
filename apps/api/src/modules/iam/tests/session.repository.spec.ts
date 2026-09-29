@@ -41,6 +41,7 @@ describe('IAM Session Repository', () => {
 
     expect(repository).toBeDefined();
   });
+  
 
   it('should create, find and update a session', async () => {
     const moduleRef = await Test.createTestingModule({

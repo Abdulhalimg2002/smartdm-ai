@@ -16,7 +16,9 @@ export class Session {
     private readonly props: SessionProps,
   ) {}
 
-  static create(props: SessionProps): Session {
+  static create(
+    props: SessionProps,
+  ): Session {
     return new Session(props);
   }
 
@@ -43,6 +45,22 @@ export class Session {
       updatedAt: now,
     });
   }
+
+  isRevoked(): boolean {
+    return this.props.revokedAt !== null;
+  }
+
+  isExpired(): boolean {
+    return this.props.expiresAt <= new Date();
+  }
+
+  isValid(): boolean {
+    return !this.isRevoked() && !this.isExpired();
+  }
+  revoke(): void {
+  this.props.revokedAt = new Date();
+  this.props.updatedAt = new Date();
+}
 
   get id(): string {
     return this.props.id;

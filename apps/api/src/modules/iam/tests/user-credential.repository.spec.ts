@@ -126,6 +126,8 @@ describe('IAM User Credential Repository', () => {
         .delete();
     }
   });
+  
+
 
   afterAll(async () => {
     await db[Symbol.asyncDispose]();
