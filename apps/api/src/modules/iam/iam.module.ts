@@ -28,6 +28,8 @@ import { SESSION_VALIDATION_SERVICE } from './application/services/session-valid
 import { SessionValidationService } from './application/services/session-validation.service.impl.js';
 import { LOGOUT_SERVICE } from './application/services/logout.service.js';
 import { LogoutService } from './application/services/logout.service.impl.js';
+import { REVOKE_SESSION_SERVICE } from './application/services/revoke-session.service.js';
+import { RevokeSessionService } from './application/services/revoke-session.service.impl.js';
 
 @Module({
    controllers: [
@@ -64,6 +66,10 @@ import { LogoutService } from './application/services/logout.service.impl.js';
   provide: LOGOUT_SERVICE,
   useClass: LogoutService,
 },
+{
+  provide: REVOKE_SESSION_SERVICE,
+  useClass: RevokeSessionService,
+},
   ],
   exports: [
     USER_REPOSITORY,
@@ -71,6 +77,7 @@ import { LogoutService } from './application/services/logout.service.impl.js';
     SESSION_REPOSITORY,    
     SESSION_VALIDATION_SERVICE,
      LOGOUT_SERVICE,
+     REVOKE_SESSION_SERVICE,
      UserService,
     AuthService,
   ],

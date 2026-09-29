@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Param,
   Post,
   Req,
   UnauthorizedException,
@@ -20,18 +21,29 @@ import { InvalidCredentialsError } from '../../application/errors/invalid-creden
 import { LoginDto } from '../../application/dto/login.dto.js';
 import { SessionAuthGuard } from '../guards/session-auth.guard.js';
 import { type ILogoutService, LOGOUT_SERVICE } from '../../application/services/logout.service.js';
-
+import {
+  REVOKE_SESSION_SERVICE,
+  type IRevokeSessionService,
+} from '../../application/services/revoke-session.service.js';
+import { User } from '../../domain/entities/user.entity.js';
+import { InvalidSessionError } from '../../application/errors/invalid-session.error.js';
+import type { Request } from 'express';
 type AuthenticatedRequest = Request & {
   token: string;
+  user: User;
 };
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    @Inject(LOGOUT_SERVICE)
+ constructor(
+  private readonly authService: AuthService,
+
+  @Inject(LOGOUT_SERVICE)
   private readonly logoutService: ILogoutService,
-  ) {}
+
+  @Inject(REVOKE_SESSION_SERVICE)
+  private readonly revokeSessionService: IRevokeSessionService,
+) {}
 
  @Post('register')
  @HttpCode(200)
@@ -111,6 +123,32 @@ getMe() {
   return {
     message: 'Authenticated',
   };
+}
+@Post('sessions/:sessionId/revoke')
+@HttpCode(200)
+@UseGuards(SessionAuthGuard)
+async revokeSession(
+  @Param('sessionId') sessionId: string,
+  @Req() request: AuthenticatedRequest,
+) {
+  try {
+    await this.revokeSessionService.revokeSession(
+      sessionId,
+      request.user.id,
+    );
+
+    return {
+      message: 'Session revoked successfully',
+    };
+  } catch (error) {
+    if (error instanceof InvalidSessionError) {
+      throw new UnauthorizedException(
+        error.message,
+      );
+    }
+
+    throw error;
+  }
 }
 
 }

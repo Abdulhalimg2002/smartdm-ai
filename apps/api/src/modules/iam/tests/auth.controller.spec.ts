@@ -26,6 +26,17 @@ import type {
   ILogoutService,
 } from '../application/services/logout.service.js';
 
+import type {
+  IRevokeSessionService,
+} from '../application/services/revoke-session.service.js';
+
+import type { Request } from 'express';
+
+type AuthenticatedRequest = Request & {
+  user: User;
+  token: string;
+};
+
 describe('IAM AuthController', () => {
   const logoutService = {
     logout: jest.fn<
@@ -61,10 +72,20 @@ describe('IAM AuthController', () => {
       login: loginMock,
     } as unknown as AuthService;
 
+    const revokeSessionService = {
+      revokeSession: jest.fn<
+        (
+          sessionId: string,
+          userId: string,
+        ) => Promise<void>
+      >(),
+    } as unknown as IRevokeSessionService;
+
     const controller =
       new AuthController(
         authService,
         logoutService,
+        revokeSessionService,
       );
 
     const result =
@@ -120,10 +141,20 @@ describe('IAM AuthController', () => {
       login: loginMock,
     } as unknown as AuthService;
 
+    const revokeSessionService = {
+      revokeSession: jest.fn<
+        (
+          sessionId: string,
+          userId: string,
+        ) => Promise<void>
+      >(),
+    } as unknown as IRevokeSessionService;
+
     const controller =
       new AuthController(
         authService,
         logoutService,
+        revokeSessionService,
       );
 
     await expect(
@@ -136,4 +167,58 @@ describe('IAM AuthController', () => {
       message: 'Invalid credentials',
     });
   });
+
+  it('should revoke a session successfully', async () => {
+    const user = User.createNew({
+      id: 'user-1',
+      email: 'abdul@example.com',
+      firstName: 'Abdul',
+      lastName: 'Halim',
+    });
+
+    const revokeSessionMock =
+      jest.fn<
+        (
+          sessionId: string,
+          userId: string,
+        ) => Promise<void>
+      >();
+
+    const revokeSessionService = {
+      revokeSession: revokeSessionMock,
+    } as unknown as IRevokeSessionService;
+
+    const authService = {
+      login: jest.fn(),
+    } as unknown as AuthService;
+
+    const controller =
+      new AuthController(
+        authService,
+        logoutService,
+        revokeSessionService,
+      );
+
+    const request = {
+      user,
+    } as AuthenticatedRequest;
+
+    const result =
+      await controller.revokeSession(
+        'session-123',
+        request,
+      );
+
+    expect(
+      revokeSessionMock,
+    ).toHaveBeenCalledWith(
+      'session-123',
+      user.id,
+    );
+
+    expect(result).toEqual({
+      message: 'Session revoked successfully',
+    });
+  });
 });
+
