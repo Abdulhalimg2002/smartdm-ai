@@ -54,31 +54,38 @@ describe('IAM SessionValidationService', () => {
         (token: string) => string
       >();
 
-    const sessionRepository: ISessionRepository = {
-      findById:
-        jest.fn<
-          (
-            id: string,
-          ) => Promise<Session | null>
-        >(),
+  const sessionRepository: ISessionRepository = {
+  findById:
+    jest.fn<
+      (
+        id: string,
+      ) => Promise<Session | null>
+    >(),
 
-      findByTokenHash:
-        findByTokenHashMock,
+  findByTokenHash:
+    findByTokenHashMock,
 
-      create:
-        jest.fn<
-          (
-            session: Session,
-          ) => Promise<Session>
-        >(),
+  create:
+    jest.fn<
+      (
+        session: Session,
+      ) => Promise<Session>
+    >(),
 
-      update:
-        jest.fn<
-          (
-            session: Session,
-          ) => Promise<Session>
-        >(),
-    };
+  update:
+    jest.fn<
+      (
+        session: Session,
+      ) => Promise<Session>
+    >(),
+
+  revokeAllByUserId:
+    jest.fn<
+      (
+        userId: string,
+      ) => Promise<void>
+    >(),
+};
 
     const userRepository: IUserRepository = {
       findById:

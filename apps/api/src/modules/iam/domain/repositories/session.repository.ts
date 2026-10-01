@@ -14,4 +14,7 @@ export interface ISessionRepository {
   create(session: Session): Promise<Session>;
 
   update(session: Session): Promise<Session>;
+  revokeAllByUserId(
+  userId: string,
+): Promise<void>;
 }

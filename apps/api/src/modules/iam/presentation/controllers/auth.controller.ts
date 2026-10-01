@@ -28,6 +28,10 @@ import {
 import { User } from '../../domain/entities/user.entity.js';
 import { InvalidSessionError } from '../../application/errors/invalid-session.error.js';
 import type { Request } from 'express';
+import { FORGOT_PASSWORD_SERVICE,type IForgotPasswordService } from '../../application/services/forgot-password.service.js';
+import { ForgotPasswordDto } from '../../application/dto/forgot-password.dto.js';
+import { type IResetPasswordService, RESET_PASSWORD_SERVICE } from '../../application/services/reset-password.service.js';
+import { ResetPasswordDto } from '../../application/dto/reset-password.dto.js';
 type AuthenticatedRequest = Request & {
   token: string;
   user: User;
@@ -43,7 +47,14 @@ export class AuthController {
 
   @Inject(REVOKE_SESSION_SERVICE)
   private readonly revokeSessionService: IRevokeSessionService,
+  @Inject(FORGOT_PASSWORD_SERVICE)
+private readonly forgotPasswordService:
+  IForgotPasswordService,
+  @Inject(RESET_PASSWORD_SERVICE)
+private readonly resetPasswordService:
+  IResetPasswordService,
 ) {}
+
 
  @Post('register')
  @HttpCode(200)
@@ -150,5 +161,35 @@ async revokeSession(
     throw error;
   }
 }
+@Post('forgot-password')
+@HttpCode(200)
+async forgotPassword(
+  @Body() dto: ForgotPasswordDto,
+) {
+  await this.forgotPasswordService.requestReset(
+    dto.email,
+  );
+
+  return {
+    message:
+      'If an account exists with this email, a password reset link has been sent.',
+  };
+}
+@Post('reset-password')
+@HttpCode(200)
+async resetPassword(
+  @Body() dto: ResetPasswordDto,
+) {
+  await this.resetPasswordService.resetPassword({
+    token: dto.token,
+    newPassword: dto.newPassword,
+  });
+
+  return {
+    message:
+      'Password has been reset successfully.',
+  };
+}
+
 
 }

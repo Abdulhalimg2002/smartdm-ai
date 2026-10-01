@@ -32,6 +32,15 @@ export class UserCredential {
       updatedAt: now,
     });
   }
+  changePassword(
+  passwordHash: string,
+): void {
+  this.props.passwordHash = passwordHash;
+  this.props.passwordChangedAt =
+    new Date();
+  this.props.updatedAt =
+    new Date();
+}
 
   get id(): string {
     return this.props.id;

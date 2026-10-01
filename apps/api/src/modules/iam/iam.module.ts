@@ -30,6 +30,14 @@ import { LOGOUT_SERVICE } from './application/services/logout.service.js';
 import { LogoutService } from './application/services/logout.service.impl.js';
 import { REVOKE_SESSION_SERVICE } from './application/services/revoke-session.service.js';
 import { RevokeSessionService } from './application/services/revoke-session.service.impl.js';
+import { PASSWORD_RESET_REPOSITORY } from './domain/repositories/password-reset.repository.js';
+import { PrismaPasswordResetRepository } from './infrastructure/persistence/repositories/prisma-password-reset.repository.js';
+import { FORGOT_PASSWORD_SERVICE } from './application/services/forgot-password.service.js';
+import { ForgotPasswordService } from './application/services/forgot-password.service.impl.js';
+import { RESET_PASSWORD_SERVICE } from './application/services/reset-password.service.js';
+import { ResetPasswordService } from './application/services/reset-password.service.impl.js';
+import { EMAIL_SERVICE } from './application/services/email.service.js';
+import { NodemailerEmailService } from './infrastructure/email/nodemailer-email.service.js';
 
 @Module({
    controllers: [
@@ -70,6 +78,22 @@ import { RevokeSessionService } from './application/services/revoke-session.serv
   provide: REVOKE_SESSION_SERVICE,
   useClass: RevokeSessionService,
 },
+{
+  provide: PASSWORD_RESET_REPOSITORY,
+  useClass: PrismaPasswordResetRepository,
+},
+{
+  provide: FORGOT_PASSWORD_SERVICE,
+  useClass: ForgotPasswordService,
+},
+{
+  provide: RESET_PASSWORD_SERVICE,
+  useClass:ResetPasswordService
+},
+{
+  provide: EMAIL_SERVICE,
+  useClass: NodemailerEmailService,
+},
   ],
   exports: [
     USER_REPOSITORY,
@@ -78,6 +102,8 @@ import { RevokeSessionService } from './application/services/revoke-session.serv
     SESSION_VALIDATION_SERVICE,
      LOGOUT_SERVICE,
      REVOKE_SESSION_SERVICE,
+     FORGOT_PASSWORD_SERVICE,
+     RESET_PASSWORD_SERVICE,
      UserService,
     AuthService,
   ],

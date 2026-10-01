@@ -161,4 +161,35 @@ export class PrismaSessionRepository
       updatedAt: record.updatedAt,
     });
   }
+  async revokeAllByUserId(
+  userId: string,
+): Promise<void> {
+  const sessions =
+    await db.orm.public.Session
+      .where({
+        userId,
+      })
+      .all();
+
+  const activeSessions =
+    sessions.filter(
+      (session) =>
+        session.revokedAt === null,
+      );
+
+  await Promise.all(
+    activeSessions.map(
+      async (session) => {
+        await db.orm.public.Session
+          .where({
+            id: session.id,
+          })
+          .update({
+            revokedAt:
+              Temporal.Now.instant(),
+          });
+      },
+    ),
+  );
+}
 }
