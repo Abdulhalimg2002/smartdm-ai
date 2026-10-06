@@ -1,4 +1,3 @@
-
 import {
   describe,
   it,
@@ -26,43 +25,74 @@ import type {
 import type {
   ISessionTokenService,
 } from '../application/services/session-token.service.js';
+import { IAuthEventService } from '../application/services/auth-event.service.js';
 
 describe('LogoutService', () => {
- const sessionTokenService: {
-  generate: jest.MockedFunction<
-    ISessionTokenService['generate']
-  >;
-  hash: jest.MockedFunction<
-    ISessionTokenService['hash']
-  >;
-} = {
-  generate: jest.fn(),
-  hash: jest.fn(),
-};
+  const sessionTokenService: {
+    generate: jest.MockedFunction<
+      ISessionTokenService['generate']
+    >;
+
+    hash: jest.MockedFunction<
+      ISessionTokenService['hash']
+    >;
+  } = {
+    generate: jest.fn(),
+    hash: jest.fn(),
+  };
 
   const sessionRepository: {
     findById: jest.MockedFunction<
       ISessionRepository['findById']
     >;
+
     findByTokenHash: jest.MockedFunction<
       ISessionRepository['findByTokenHash']
     >;
+
     create: jest.MockedFunction<
       ISessionRepository['create']
     >;
+
     update: jest.MockedFunction<
       ISessionRepository['update']
     >;
+
+    revokeAllByUserId: jest.MockedFunction<
+      ISessionRepository['revokeAllByUserId']
+    >;
+
   } = {
     findById: jest.fn(),
-    findByTokenHash: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-  };
 
+    findByTokenHash: jest.fn(),
+
+    create: jest.fn(),
+
+    update: jest.fn(),
+
+    revokeAllByUserId:
+      jest.fn(),
+  };
+  const recordAuthEventMock =
+  jest.fn<
+    IAuthEventService['record']
+  >();
+
+recordAuthEventMock.mockResolvedValue(
+  {} as Awaited<
+    ReturnType<IAuthEventService['record']>
+  >,
+);
+
+const authEventService: IAuthEventService = {
+  record: recordAuthEventMock,
+};
+ 
   const service = new LogoutService(
     sessionRepository,
     sessionTokenService,
+     authEventService
   );
 
   beforeEach(() => {
@@ -91,7 +121,9 @@ describe('LogoutService', () => {
       session,
     );
 
-    await service.logout('raw-token');
+    await service.logout({
+      token: 'raw-token',
+    });
 
     expect(
       sessionTokenService.hash,
@@ -105,13 +137,23 @@ describe('LogoutService', () => {
       'hashed-token',
     );
 
-    expect(session.isRevoked()).toBe(true);
+    expect(
+      session.isRevoked(),
+    ).toBe(true);
 
     expect(
       sessionRepository.update,
     ).toHaveBeenCalledWith(
       session,
     );
+    expect(
+  recordAuthEventMock,
+).toHaveBeenCalledWith({
+  userId: session.userId,
+  type: 'LOGOUT',
+  ipAddress: undefined,
+  userAgent: undefined,
+});
   });
 
   it('should reject when session does not exist', async () => {
@@ -124,7 +166,9 @@ describe('LogoutService', () => {
     );
 
     await expect(
-      service.logout('raw-token'),
+      service.logout({
+        token: 'raw-token',
+      }),
     ).rejects.toThrow(
       InvalidSessionError,
     );
@@ -153,7 +197,9 @@ describe('LogoutService', () => {
     );
 
     await expect(
-      service.logout('raw-token'),
+      service.logout({
+        token: 'raw-token',
+      }),
     ).rejects.toThrow(
       InvalidSessionError,
     );
@@ -188,7 +234,9 @@ describe('LogoutService', () => {
     );
 
     await expect(
-      service.logout('raw-token'),
+      service.logout({
+        token: 'raw-token',
+      }),
     ).rejects.toThrow(
       InvalidSessionError,
     );
@@ -198,4 +246,3 @@ describe('LogoutService', () => {
     ).not.toHaveBeenCalled();
   });
 });
-

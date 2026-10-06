@@ -28,6 +28,14 @@ import type {
   ISessionTokenService,
 } from '../application/services/session-token.service.js';
 
+import type {
+  IEmailService,
+} from '../application/services/email.service.js';
+
+import type {
+  IAuthEventService,
+} from '../application/services/auth-event.service.js';
+
 type MockUserService = {
   findByEmail: jest.Mock<
     (email: string) => Promise<User | null>
@@ -36,7 +44,9 @@ type MockUserService = {
 
 type MockPasswordResetRepository = {
   findActiveByUserId: jest.Mock<
-    (userId: string) => Promise<PasswordReset | null>
+    (
+      userId: string,
+    ) => Promise<PasswordReset | null>
   >;
 
   create: jest.Mock<
@@ -74,6 +84,16 @@ describe(
 
     let sessionTokenService:
       MockSessionTokenService;
+
+    let emailService: IEmailService;
+
+    let recordAuthEventMock:
+      jest.MockedFunction<
+        IAuthEventService['record']
+      >;
+
+    let authEventService:
+      IAuthEventService;
 
     beforeEach(() => {
       userService = {
@@ -124,6 +144,30 @@ describe(
           >(),
       };
 
+      emailService = {
+        send: jest.fn<
+          IEmailService['send']
+        >(),
+      };
+
+      recordAuthEventMock =
+        jest.fn<
+          IAuthEventService['record']
+        >();
+
+      recordAuthEventMock.mockResolvedValue(
+        {} as Awaited<
+          ReturnType<
+            IAuthEventService['record']
+          >
+        >,
+      );
+
+      authEventService = {
+        record:
+          recordAuthEventMock,
+      };
+
       service =
         new ForgotPasswordService(
           userService as unknown as UserService,
@@ -131,6 +175,10 @@ describe(
           passwordResetRepository as unknown as IPasswordResetRepository,
 
           sessionTokenService as unknown as ISessionTokenService,
+
+          emailService,
+
+          authEventService,
         );
     });
 
@@ -141,9 +189,10 @@ describe(
           .mockResolvedValue(null);
 
         const result =
-          await service.requestReset(
-            'unknown@example.com',
-          );
+          await service.requestReset({
+            email:
+              'unknown@example.com',
+          });
 
         expect(result)
           .toBeNull();
@@ -161,6 +210,14 @@ describe(
 
         expect(
           passwordResetRepository.create,
+        ).not.toHaveBeenCalled();
+
+        expect(
+          emailService.send,
+        ).not.toHaveBeenCalled();
+
+        expect(
+          recordAuthEventMock,
         ).not.toHaveBeenCalled();
       },
     );
@@ -205,9 +262,9 @@ describe(
           );
 
         const result =
-          await service.requestReset(
-            user.email,
-          );
+          await service.requestReset({
+            email: user.email,
+          });
 
         expect(result)
           .toBeInstanceOf(
@@ -238,6 +295,20 @@ describe(
         expect(
           passwordResetRepository.create,
         ).toHaveBeenCalledTimes(1);
+
+        expect(
+          emailService.send,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(
+          recordAuthEventMock,
+        ).toHaveBeenCalledWith({
+          userId: user.id,
+          type:
+            'PASSWORD_RESET_REQUESTED',
+          ipAddress: undefined,
+          userAgent: undefined,
+        });
       },
     );
 
@@ -304,9 +375,9 @@ describe(
           );
 
         const result =
-          await service.requestReset(
-            user.email,
-          );
+          await service.requestReset({
+            email: user.email,
+          });
 
         expect(
           existingReset.isRevoked(),
@@ -326,6 +397,16 @@ describe(
           .toBe(
             'new-hashed-token',
           );
+
+        expect(
+          recordAuthEventMock,
+        ).toHaveBeenCalledWith({
+          userId: user.id,
+          type:
+            'PASSWORD_RESET_REQUESTED',
+          ipAddress: undefined,
+          userAgent: undefined,
+        });
       },
     );
 
@@ -372,9 +453,9 @@ describe(
           Date.now();
 
         const result =
-          await service.requestReset(
-            user.email,
-          );
+          await service.requestReset({
+            email: user.email,
+          });
 
         const after =
           Date.now();
@@ -402,6 +483,16 @@ describe(
           .toBeLessThanOrEqual(
             maxExpected,
           );
+
+        expect(
+          recordAuthEventMock,
+        ).toHaveBeenCalledWith({
+          userId: user.id,
+          type:
+            'PASSWORD_RESET_REQUESTED',
+          ipAddress: undefined,
+          userAgent: undefined,
+        });
       },
     );
   },

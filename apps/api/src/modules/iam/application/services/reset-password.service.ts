@@ -5,5 +5,7 @@ export interface IResetPasswordService {
   resetPassword(params: {
     token: string;
     newPassword: string;
+    ipAddress?: string | null;
+  userAgent?: string | null;
   }): Promise<void>;
 }

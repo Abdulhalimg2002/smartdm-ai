@@ -24,5 +24,10 @@
     "types": [
       "node"
     ]
-  }
+  },
+   "exclude": [
+    "node_modules",
+     "dist",
+    "migrations"
+  ]
 }

@@ -17,6 +17,7 @@ export interface UserProps {
 }
 
 export class User {
+
   private constructor(private readonly props: UserProps) {}
 
   static create(props: UserProps): User {
@@ -46,6 +47,13 @@ export class User {
   markLogin(): void {
   this.props.lastLoginAt = new Date();
   this.props.updatedAt = new Date();
+}
+verifyEmail(): void {
+  this.props.emailVerifiedAt = new Date();
+  this.props.updatedAt = new Date();
+}
+canAuthenticate(): boolean {
+  return this.props.status === UserStatus.ACTIVE;
 }
 
   get id(): string {

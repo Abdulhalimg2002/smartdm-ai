@@ -21,24 +21,34 @@ import {
 import {
   InvalidSessionError,
 } from '../errors/invalid-session.error.js';
+import { AUTH_EVENT_SERVICE, type IAuthEventService } from './auth-event.service.js';
 
 @Injectable()
 export class LogoutService
   implements ILogoutService
 {
-  constructor(
-    @Inject(SESSION_REPOSITORY)
-    private readonly sessionRepository: ISessionRepository,
+ constructor(
+  @Inject(SESSION_REPOSITORY)
+  private readonly sessionRepository: ISessionRepository,
 
-    @Inject(SESSION_TOKEN_SERVICE)
-    private readonly sessionTokenService: ISessionTokenService,
-  ) {}
+  @Inject(SESSION_TOKEN_SERVICE)
+  private readonly sessionTokenService: ISessionTokenService,
+
+  @Inject(AUTH_EVENT_SERVICE)
+  private readonly authEventService: IAuthEventService,
+) {}
 
   async logout(
-    token: string,
+    params: {
+      token: string;
+      ipAddress?: string | null;
+      userAgent?: string | null;
+    },
   ): Promise<void> {
     const tokenHash =
-      this.sessionTokenService.hash(token);
+      this.sessionTokenService.hash(
+        params.token,
+      );
 
     const session =
       await this.sessionRepository.findByTokenHash(
@@ -58,5 +68,11 @@ export class LogoutService
     await this.sessionRepository.update(
       session,
     );
+    await this.authEventService.record({
+  userId: session.userId,
+  type: 'LOGOUT',
+  ipAddress: params.ipAddress,
+  userAgent: params.userAgent,
+});
   }
 }

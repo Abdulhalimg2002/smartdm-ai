@@ -4,7 +4,6 @@ import {
 } from '@nestjs/common';
 
 import {
-  REVOKE_SESSION_SERVICE,
   type IRevokeSessionService,
 } from './revoke-session.service.js';
 

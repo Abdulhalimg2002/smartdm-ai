@@ -2,5 +2,9 @@ export const LOGOUT_SERVICE =
   Symbol('LOGOUT_SERVICE');
 
 export interface ILogoutService {
-  logout(token: string): Promise<void>;
+logout(params: {
+  token: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+}): Promise<void>;
 }

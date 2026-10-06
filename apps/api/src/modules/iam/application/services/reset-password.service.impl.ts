@@ -33,6 +33,11 @@ import {
   InvalidPasswordResetError,
 } from '../errors/invalid-password-reset.error.js';
 
+import {
+  AUTH_EVENT_SERVICE,
+  type IAuthEventService,
+} from './auth-event.service.js';
+
 @Injectable()
 export class ResetPasswordService
   implements IResetPasswordService
@@ -53,11 +58,17 @@ export class ResetPasswordService
     @Inject(SESSION_REPOSITORY)
     private readonly sessionRepository:
       ISessionRepository,
+
+    @Inject(AUTH_EVENT_SERVICE)
+    private readonly authEventService:
+      IAuthEventService,
   ) {}
 
   async resetPassword(params: {
     token: string;
     newPassword: string;
+    ipAddress?: string | null;
+  userAgent?: string | null;
   }): Promise<void> {
     const tokenHash =
       createHash('sha256')
@@ -103,8 +114,17 @@ export class ResetPasswordService
     await this.passwordResetRepository.update(
       passwordReset,
     );
+
     await this.sessionRepository.revokeAllByUserId(
-  passwordReset.userId,
-);
+      passwordReset.userId,
+    );
+
+   await this.authEventService.record({
+  userId: passwordReset.userId,
+  type: 'PASSWORD_RESET_COMPLETED',
+  ipAddress: params.ipAddress,
+  userAgent: params.userAgent,
+});
   }
 }
+

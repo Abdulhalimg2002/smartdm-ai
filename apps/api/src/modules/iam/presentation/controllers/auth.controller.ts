@@ -14,6 +14,7 @@ import {
 
 import { AuthService } from '../../application/services/auth.service.js';
 
+
 import { RegisterDto } from '../../application/dto/register.dto.js';
 import { EmailAlreadyRegisteredError } from '../../application/errors/email-already-registered.error.js';
 import { UserResponseDto } from '../../application/dto/user-response.dto.js';
@@ -57,9 +58,10 @@ private readonly resetPasswordService:
 
 
  @Post('register')
- @HttpCode(200)
+@HttpCode(200)
 async register(
   @Body() dto: RegisterDto,
+  @Req() request: Request,
 ) {
   try {
     const user =
@@ -68,6 +70,8 @@ async register(
         password: dto.password,
         firstName: dto.firstName,
         lastName: dto.lastName,
+        ipAddress: request.ip,
+        userAgent: request.get('user-agent') ?? null,
       });
 
     return UserResponseDto.fromEntity(user);
@@ -87,12 +91,15 @@ async register(
   @HttpCode(200)
   async login(
     @Body() dto: LoginDto,
+    @Req() request: Request,
   ) {
     try {
       const result =
         await this.authService.login({
           email: dto.email,
           password: dto.password,
+        ipAddress: request.ip,
+    userAgent: request.get('user-agent') ?? null,
         });
 
       return {
@@ -113,20 +120,7 @@ async register(
       throw error;
     }
   }
-  @Post('logout')
-  @HttpCode(200)
-  @UseGuards(SessionAuthGuard)
-  async logout(
-    @Req() request: AuthenticatedRequest,
-  ) {
-    await this.logoutService.logout(
-      request.token,
-    );
-
-    return {
-      message: 'Logged out successfully',
-    };
-  }
+ 
   
   @Get('me')
 @UseGuards(SessionAuthGuard)
@@ -165,10 +159,14 @@ async revokeSession(
 @HttpCode(200)
 async forgotPassword(
   @Body() dto: ForgotPasswordDto,
+  @Req() request: Request,
 ) {
-  await this.forgotPasswordService.requestReset(
-    dto.email,
-  );
+  await this.forgotPasswordService.requestReset({
+    email: dto.email,
+    ipAddress: request.ip,
+    userAgent:
+      request.get('user-agent') ?? null,
+  });
 
   return {
     message:
@@ -179,10 +177,14 @@ async forgotPassword(
 @HttpCode(200)
 async resetPassword(
   @Body() dto: ResetPasswordDto,
+  @Req() request: Request,
 ) {
   await this.resetPasswordService.resetPassword({
     token: dto.token,
     newPassword: dto.newPassword,
+    ipAddress: request.ip,
+    userAgent:
+      request.get('user-agent') ?? null,
   });
 
   return {

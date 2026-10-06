@@ -22,10 +22,11 @@ import {
 } from './session-token.service.js';
 
 import {
-  FORGOT_PASSWORD_SERVICE,
+ 
   type IForgotPasswordService,
 } from './forgot-password.service.js';
 import { EMAIL_SERVICE, type IEmailService } from './email.service.js';
+import { AUTH_EVENT_SERVICE,type  IAuthEventService } from './auth-event.service.js';
 
 @Injectable()
 export class ForgotPasswordService
@@ -45,13 +46,20 @@ export class ForgotPasswordService
   @Inject(EMAIL_SERVICE)
   private readonly emailService:
     IEmailService,
+    @Inject(AUTH_EVENT_SERVICE)
+  private readonly authEventService:
+    IAuthEventService,
 ) {}
 
-  async requestReset(
-    email: string,
-  ): Promise<PasswordReset | null> {
-    const user =
-      await this.userService.findByEmail(email);
+ async requestReset(params: {
+  email: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+}): Promise<PasswordReset | null> {
+   const user =
+  await this.userService.findByEmail(
+    params.email,
+  );
 
     if (!user) {
       return null;
@@ -136,6 +144,12 @@ await this.emailService.send({
       you can safely ignore this email.
     </p>
   `,
+});
+await this.authEventService.record({
+  userId: user.id,
+  type: 'PASSWORD_RESET_REQUESTED',
+  ipAddress: params.ipAddress,
+  userAgent: params.userAgent,
 });
 
 return passwordReset;

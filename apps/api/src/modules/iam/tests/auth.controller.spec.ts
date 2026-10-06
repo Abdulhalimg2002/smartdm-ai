@@ -52,26 +52,28 @@ describe('IAM AuthController', () => {
       (token: string) => Promise<void>
     >();
 
-  const logoutService = {
-    logout: logoutMock,
-  } as unknown as ILogoutService;
+  const logoutService =
+    {
+      logout: logoutMock,
+    } as unknown as ILogoutService;
 
   const requestResetMock =
     jest.fn<
       (
-        email: string,
-      ) => Promise<
-        ReturnType<
-          IForgotPasswordService['requestReset']
-        > extends Promise<infer T>
-          ? T
-          : never
+        params: {
+          email: string;
+          ipAddress?: string | null;
+          userAgent?: string | null;
+        },
+      ) => ReturnType<
+        IForgotPasswordService['requestReset']
       >
     >();
 
-  const forgotPasswordService = {
-    requestReset: requestResetMock,
-  } as unknown as IForgotPasswordService;
+  const forgotPasswordService =
+    {
+      requestReset: requestResetMock,
+    } as unknown as IForgotPasswordService;
 
   const resetPasswordMock =
     jest.fn<
@@ -79,171 +81,62 @@ describe('IAM AuthController', () => {
         params: {
           token: string;
           newPassword: string;
+          ipAddress?: string | null;
+          userAgent?: string | null;
         },
       ) => Promise<void>
     >();
 
-  const resetPasswordService = {
-    resetPassword: resetPasswordMock,
-  } as unknown as IResetPasswordService;
-
-  it('should login successfully', async () => {
-    const user = User.createNew({
-      id: 'user-1',
-      email: 'abdul@example.com',
-      firstName: 'Abdul',
-      lastName: 'Halim',
-    });
-
-    const loginMock =
-      jest.fn<
-        (params: {
-          email: string;
-          password: string;
-        }) => Promise<{
-          user: User;
-          token: string;
-        }>
-      >();
-
-    loginMock.mockResolvedValue({
-      user,
-      token: 'raw-session-token',
-    });
-
-    const authService = {
-      login: loginMock,
-    } as unknown as AuthService;
-
-    const revokeSessionService = {
-      revokeSession: jest.fn<
-        (
-          sessionId: string,
-          userId: string,
-        ) => Promise<void>
-      >(),
-    } as unknown as IRevokeSessionService;
-
-    const controller =
-      new AuthController(
-        authService,
-        logoutService,
-        revokeSessionService,
-        forgotPasswordService,
-        resetPasswordService,
-      );
-
-    const result =
-      await controller.login({
-        email: 'abdul@example.com',
-        password: 'StrongPassword123!',
-      });
-
-    expect(
-      loginMock,
-    ).toHaveBeenCalledWith({
-      email: 'abdul@example.com',
-      password: 'StrongPassword123!',
-    });
-
-    expect(result).toEqual({
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        status: user.status,
-        emailVerifiedAt:
-          user.emailVerifiedAt,
-        lastLoginAt:
-          user.lastLoginAt,
-        createdAt:
-          user.createdAt,
-        updatedAt:
-          user.updatedAt,
-      },
-      token: 'raw-session-token',
-    });
-  });
+  const resetPasswordService =
+    {
+      resetPassword:
+        resetPasswordMock,
+    } as unknown as IResetPasswordService;
 
   it(
-    'should throw UnauthorizedException when credentials are invalid',
+    'should login successfully',
     async () => {
+      const user =
+        User.createNew({
+          id: 'user-1',
+          email: 'abdul@example.com',
+          firstName: 'Abdul',
+          lastName: 'Halim',
+        });
+
       const loginMock =
         jest.fn<
           (params: {
             email: string;
             password: string;
+            ipAddress?: string | null;
+            userAgent?: string | null;
           }) => Promise<{
             user: User;
             token: string;
           }>
         >();
 
-      loginMock.mockRejectedValue(
-        new InvalidCredentialsError(),
-      );
-
-      const authService = {
-        login: loginMock,
-      } as unknown as AuthService;
-
-      const revokeSessionService = {
-        revokeSession: jest.fn<
-          (
-            sessionId: string,
-            userId: string,
-          ) => Promise<void>
-        >(),
-      } as unknown as IRevokeSessionService;
-
-      const controller =
-        new AuthController(
-          authService,
-          logoutService,
-          revokeSessionService,
-          forgotPasswordService,
-          resetPasswordService,
-        );
-
-      await expect(
-        controller.login({
-          email: 'abdul@example.com',
-          password: 'WrongPassword123!',
-        }),
-      ).rejects.toMatchObject({
-        status: 401,
-        message: 'Invalid credentials',
-      });
-    },
-  );
-
-  it(
-    'should revoke a session successfully',
-    async () => {
-      const user = User.createNew({
-        id: 'user-1',
-        email: 'abdul@example.com',
-        firstName: 'Abdul',
-        lastName: 'Halim',
+      loginMock.mockResolvedValue({
+        user,
+        token: 'raw-session-token',
       });
 
-      const revokeSessionMock =
-        jest.fn<
-          (
-            sessionId: string,
-            userId: string,
-          ) => Promise<void>
-        >();
+      const authService =
+        {
+          login: loginMock,
+        } as unknown as AuthService;
 
-      const revokeSessionService = {
-        revokeSession:
-          revokeSessionMock,
-      } as unknown as IRevokeSessionService;
-
-      const authService = {
-        login: jest.fn(),
-      } as unknown as AuthService;
+      const revokeSessionService =
+        {
+          revokeSession:
+            jest.fn<
+              (
+                sessionId: string,
+                userId: string,
+              ) => Promise<void>
+            >(),
+        } as unknown as IRevokeSessionService;
 
       const controller =
         new AuthController(
@@ -255,8 +148,161 @@ describe('IAM AuthController', () => {
         );
 
       const request = {
-        user,
-      } as AuthenticatedRequest;
+        ip: '127.0.0.1',
+        get: jest.fn().mockReturnValue(
+          'PostmanRuntime/Test',
+        ),
+      } as unknown as Request;
+
+      const result =
+        await controller.login(
+          {
+            email: 'abdul@example.com',
+            password: 'StrongPassword123!',
+          },
+          request,
+        );
+
+      expect(
+        loginMock,
+      ).toHaveBeenCalledWith({
+        email: 'abdul@example.com',
+        password: 'StrongPassword123!',
+        ipAddress: '127.0.0.1',
+        userAgent: 'PostmanRuntime/Test',
+      });
+
+      expect(result).toEqual({
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          status: user.status,
+          emailVerifiedAt:
+            user.emailVerifiedAt,
+          lastLoginAt:
+            user.lastLoginAt,
+          createdAt:
+            user.createdAt,
+          updatedAt:
+            user.updatedAt,
+        },
+        token: 'raw-session-token',
+      });
+    },
+  );
+
+  it(
+    'should throw UnauthorizedException when credentials are invalid',
+    async () => {
+      const loginMock =
+        jest.fn<
+          (params: {
+            email: string;
+            password: string;
+            ipAddress?: string | null;
+            userAgent?: string | null;
+          }) => Promise<{
+            user: User;
+            token: string;
+          }>
+        >();
+
+      loginMock.mockRejectedValue(
+        new InvalidCredentialsError(),
+      );
+
+      const authService =
+        {
+          login: loginMock,
+        } as unknown as AuthService;
+
+      const revokeSessionService =
+        {
+          revokeSession:
+            jest.fn<
+              (
+                sessionId: string,
+                userId: string,
+              ) => Promise<void>
+            >(),
+        } as unknown as IRevokeSessionService;
+
+      const controller =
+        new AuthController(
+          authService,
+          logoutService,
+          revokeSessionService,
+          forgotPasswordService,
+          resetPasswordService,
+        );
+
+      const request = {
+        ip: '127.0.0.1',
+        get: jest.fn().mockReturnValue(
+          'PostmanRuntime/Test',
+        ),
+      } as unknown as Request;
+
+      await expect(
+        controller.login(
+          {
+            email: 'abdul@example.com',
+            password: 'WrongPassword123!',
+          },
+          request,
+        ),
+      ).rejects.toMatchObject({
+        status: 401,
+        message: 'Invalid credentials',
+      });
+    },
+  );
+
+  it(
+    'should revoke a session successfully',
+    async () => {
+      const user =
+        User.createNew({
+          id: 'user-1',
+          email: 'abdul@example.com',
+          firstName: 'Abdul',
+          lastName: 'Halim',
+        });
+
+      const revokeSessionMock =
+        jest.fn<
+          (
+            sessionId: string,
+            userId: string,
+          ) => Promise<void>
+        >();
+
+      const revokeSessionService =
+        {
+          revokeSession:
+            revokeSessionMock,
+        } as unknown as IRevokeSessionService;
+
+      const authService =
+        {
+          login: jest.fn(),
+        } as unknown as AuthService;
+
+      const controller =
+        new AuthController(
+          authService,
+          logoutService,
+          revokeSessionService,
+          forgotPasswordService,
+          resetPasswordService,
+        );
+
+      const request =
+        {
+          user,
+        } as AuthenticatedRequest;
 
       const result =
         await controller.revokeSession(
@@ -285,18 +331,21 @@ describe('IAM AuthController', () => {
         null,
       );
 
-      const authService = {
-        login: jest.fn(),
-      } as unknown as AuthService;
+      const authService =
+        {
+          login: jest.fn(),
+        } as unknown as AuthService;
 
-      const revokeSessionService = {
-        revokeSession: jest.fn<
-          (
-            sessionId: string,
-            userId: string,
-          ) => Promise<void>
-        >(),
-      } as unknown as IRevokeSessionService;
+      const revokeSessionService =
+        {
+          revokeSession:
+            jest.fn<
+              (
+                sessionId: string,
+                userId: string,
+              ) => Promise<void>
+            >(),
+        } as unknown as IRevokeSessionService;
 
       const controller =
         new AuthController(
@@ -307,16 +356,32 @@ describe('IAM AuthController', () => {
           resetPasswordService,
         );
 
+      const request = {
+        ip: '127.0.0.1',
+        get: jest.fn().mockReturnValue(
+          'PostmanRuntime/Test',
+        ),
+      } as unknown as Request;
+
       const result =
-        await controller.forgotPassword({
-          email: 'unknown@example.com',
-        });
+        await controller.forgotPassword(
+          {
+            email:
+              'unknown@example.com',
+          },
+          request,
+        );
 
       expect(
         requestResetMock,
-      ).toHaveBeenCalledWith(
-        'unknown@example.com',
-      );
+      ).toHaveBeenCalledWith({
+        email:
+          'unknown@example.com',
+        ipAddress:
+          '127.0.0.1',
+        userAgent:
+          'PostmanRuntime/Test',
+      });
 
       expect(result).toEqual({
         message:
@@ -330,18 +395,21 @@ describe('IAM AuthController', () => {
     async () => {
       resetPasswordMock.mockResolvedValue();
 
-      const authService = {
-        login: jest.fn(),
-      } as unknown as AuthService;
+      const authService =
+        {
+          login: jest.fn(),
+        } as unknown as AuthService;
 
-      const revokeSessionService = {
-        revokeSession: jest.fn<
-          (
-            sessionId: string,
-            userId: string,
-          ) => Promise<void>
-        >(),
-      } as unknown as IRevokeSessionService;
+      const revokeSessionService =
+        {
+          revokeSession:
+            jest.fn<
+              (
+                sessionId: string,
+                userId: string,
+              ) => Promise<void>
+            >(),
+        } as unknown as IRevokeSessionService;
 
       const controller =
         new AuthController(
@@ -352,17 +420,29 @@ describe('IAM AuthController', () => {
           resetPasswordService,
         );
 
+      const request = {
+        ip: '127.0.0.1',
+        get: jest.fn().mockReturnValue(
+          'PostmanRuntime/Test',
+        ),
+      } as unknown as Request;
+
       const result =
-        await controller.resetPassword({
-          token: 'raw-reset-token',
-          newPassword: 'NewPassword123!',
-        });
+        await controller.resetPassword(
+          {
+            token: 'raw-reset-token',
+            newPassword: 'NewPassword123!',
+          },
+          request,
+        );
 
       expect(
         resetPasswordMock,
       ).toHaveBeenCalledWith({
         token: 'raw-reset-token',
         newPassword: 'NewPassword123!',
+        ipAddress: '127.0.0.1',
+        userAgent: 'PostmanRuntime/Test',
       });
 
       expect(result).toEqual({

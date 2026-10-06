@@ -5,24 +5,29 @@ import {
   jest,
 } from '@jest/globals';
 
-import { AuthService } from '../application/services/auth.service.js';
-import { UserService } from '../application/services/user.service.js';
+import {
+  AuthService,
+} from '../application/services/auth.service.js';
+
+import {
+  UserService,
+} from '../application/services/user.service.js';
+
+import type {
+  IAuthEventService,
+} from '../application/services/auth-event.service.js';
 
 import type {
   IUserCredentialRepository,
 } from '../domain/repositories/user-credential.repository.js';
 
 import type {
-  ISessionRepository,
-} from '../domain/repositories/session.repository.js';
-
-import type {
   IPasswordHasher,
 } from '../application/services/password-hasher.service.js';
 
 import type {
-  ISessionTokenService,
-} from '../application/services/session-token.service.js';
+  ISessionService,
+} from '../application/services/session.service.js';
 
 import {
   User,
@@ -66,10 +71,28 @@ describe('IAM AuthService', () => {
         ) => Promise<boolean>
       >();
 
-    findByEmailMock.mockResolvedValue(null);
+    const recordAuthEventMock =
+      jest.fn<
+        IAuthEventService['record']
+      >();
+
+    const createSessionMock =
+      jest.fn<
+        ISessionService['create']
+      >();
+
+    findByEmailMock.mockResolvedValue(
+      null,
+    );
 
     hashMock.mockResolvedValue(
       'hashed-password',
+    );
+
+    recordAuthEventMock.mockResolvedValue(
+      {} as Awaited<
+        ReturnType<IAuthEventService['record']>
+      >,
     );
 
     const userService = {
@@ -86,41 +109,22 @@ describe('IAM AuthService', () => {
       compare: compareMock,
     };
 
-    const sessionRepository: ISessionRepository = {
-      findById: jest.fn<
-        (id: string) => Promise<Session | null>
-      >(),
-
-      findByTokenHash: jest.fn<
-        (tokenHash: string) => Promise<Session | null>
-      >(),
-
-      create: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-
-      update: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
+    const sessionService: ISessionService = {
+      create: createSessionMock,
     };
 
-    const sessionTokenService: ISessionTokenService = {
-      generate: jest.fn<
-        () => string
-      >(),
-
-      hash: jest.fn<
-        (token: string) => string
-      >(),
+    const authEventService: IAuthEventService = {
+      record: recordAuthEventMock,
     };
 
-    const authService = new AuthService(
-      userService,
-      credentialRepository,
-      passwordHasher,
-      sessionRepository,
-      sessionTokenService,
-    );
+    const authService =
+      new AuthService(
+        userService,
+        credentialRepository,
+        passwordHasher,
+        sessionService,
+        authEventService,
+      );
 
     const result =
       await authService.register({
@@ -150,15 +154,30 @@ describe('IAM AuthService', () => {
       createCredentialMock,
     ).toHaveBeenCalledTimes(1);
 
-    expect(result.email).toBe(
+    expect(
+      recordAuthEventMock,
+    ).toHaveBeenCalledWith({
+      userId: result.id,
+      type: 'REGISTER',
+      ipAddress: undefined,
+      userAgent: undefined,
+    });
+
+    expect(
+      result.email,
+    ).toBe(
       'test@example.com',
     );
 
-    expect(result.firstName).toBe(
+    expect(
+      result.firstName,
+    ).toBe(
       'Abdul',
     );
 
-    expect(result.lastName).toBe(
+    expect(
+      result.lastName,
+    ).toBe(
       'Halim',
     );
   });
@@ -192,6 +211,16 @@ describe('IAM AuthService', () => {
         ) => Promise<boolean>
       >();
 
+    const recordAuthEventMock =
+      jest.fn<
+        IAuthEventService['record']
+      >();
+
+    const createSessionMock =
+      jest.fn<
+        ISessionService['create']
+      >();
+
     const existingUser = {
       id: 'existing-user-id',
       email: 'test@example.com',
@@ -215,41 +244,22 @@ describe('IAM AuthService', () => {
       compare: compareMock,
     };
 
-    const sessionRepository: ISessionRepository = {
-      findById: jest.fn<
-        (id: string) => Promise<Session | null>
-      >(),
-
-      findByTokenHash: jest.fn<
-        (tokenHash: string) => Promise<Session | null>
-      >(),
-
-      create: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-
-      update: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
+    const sessionService: ISessionService = {
+      create: createSessionMock,
     };
 
-    const sessionTokenService: ISessionTokenService = {
-      generate: jest.fn<
-        () => string
-      >(),
-
-      hash: jest.fn<
-        (token: string) => string
-      >(),
+    const authEventService: IAuthEventService = {
+      record: recordAuthEventMock,
     };
 
-    const authService = new AuthService(
-      userService,
-      credentialRepository,
-      passwordHasher,
-      sessionRepository,
-      sessionTokenService,
-    );
+    const authService =
+      new AuthService(
+        userService,
+        credentialRepository,
+        passwordHasher,
+        sessionService,
+        authEventService,
+      );
 
     await expect(
       authService.register({
@@ -273,15 +283,24 @@ describe('IAM AuthService', () => {
     expect(
       createCredentialMock,
     ).not.toHaveBeenCalled();
+
+    expect(
+      recordAuthEventMock,
+    ).not.toHaveBeenCalled();
+
+    expect(
+      createSessionMock,
+    ).not.toHaveBeenCalled();
   });
 
   it('should login with valid credentials and create a session', async () => {
-    const user = User.createNew({
-      id: 'user-1',
-      email: 'abdul@example.com',
-      firstName: 'Abdul',
-      lastName: 'Halim',
-    });
+    const user =
+      User.createNew({
+        id: 'user-1',
+        email: 'abdul@example.com',
+        firstName: 'Abdul',
+        lastName: 'Halim',
+      });
 
     const credentials =
       UserCredential.createNew({
@@ -319,18 +338,25 @@ describe('IAM AuthService', () => {
 
     const createSessionMock =
       jest.fn<
-        (session: Session) => Promise<Session>
+        ISessionService['create']
       >();
 
-    const generateTokenMock =
+    const recordAuthEventMock =
       jest.fn<
-        () => string
+        IAuthEventService['record']
       >();
 
-    const hashTokenMock =
-      jest.fn<
-        (token: string) => string
-      >();
+    const session =
+      Session.createNew({
+        id: 'session-1',
+        userId: user.id,
+        tokenHash: 'hashed-session-token',
+        expiresAt:
+          new Date(
+            Date.now() +
+              30 * 24 * 60 * 60 * 1000,
+          ),
+      });
 
     findByEmailMock.mockResolvedValue(
       user,
@@ -348,17 +374,10 @@ describe('IAM AuthService', () => {
       true,
     );
 
-    generateTokenMock.mockReturnValue(
-      'raw-session-token',
-    );
-
-    hashTokenMock.mockReturnValue(
-      'hashed-session-token',
-    );
-
-    createSessionMock.mockImplementation(
-      async (session) => session,
-    );
+    createSessionMock.mockResolvedValue({
+      session,
+      token: 'raw-session-token',
+    });
 
     const userService = {
       findByEmail: findByEmailMock,
@@ -366,57 +385,66 @@ describe('IAM AuthService', () => {
       update: updateUserMock,
     } as unknown as UserService;
 
-    const credentialRepository: IUserCredentialRepository = {
-      findByUserId: findByUserIdMock,
-      create: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
-      update: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
-    };
+    const credentialRepository:
+      IUserCredentialRepository = {
+        findByUserId:
+          findByUserIdMock,
 
-    const passwordHasher: IPasswordHasher = {
-      hash: jest.fn<
-        (password: string) => Promise<string>
-      >(),
+        create:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
 
-      compare: compareMock,
-    };
+        update:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
+      };
 
-    const sessionRepository: ISessionRepository = {
-      findById: jest.fn<
-        (id: string) => Promise<Session | null>
-      >(),
+    const passwordHasher:
+      IPasswordHasher = {
+        hash:
+          jest.fn<
+            (
+              password: string,
+            ) => Promise<string>
+          >(),
 
-      findByTokenHash: jest.fn<
-        (tokenHash: string) => Promise<Session | null>
-      >(),
+        compare:
+          compareMock,
+      };
 
-      create: createSessionMock,
+    const sessionService:
+      ISessionService = {
+        create:
+          createSessionMock,
+      };
 
-      update: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-    };
+    const authEventService:
+      IAuthEventService = {
+        record:
+          recordAuthEventMock,
+      };
 
-    const sessionTokenService: ISessionTokenService = {
-      generate: generateTokenMock,
-      hash: hashTokenMock,
-    };
-
-    const authService = new AuthService(
-      userService,
-      credentialRepository,
-      passwordHasher,
-      sessionRepository,
-      sessionTokenService,
-    );
+    const authService =
+      new AuthService(
+        userService,
+        credentialRepository,
+        passwordHasher,
+        sessionService,
+        authEventService,
+      );
 
     const result =
       await authService.login({
-        email: 'abdul@example.com',
-        password: 'correct-password',
+        email:
+          'abdul@example.com',
+        password:
+          'correct-password',
       });
 
     expect(
@@ -445,53 +473,41 @@ describe('IAM AuthService', () => {
     );
 
     expect(
-      generateTokenMock,
-    ).toHaveBeenCalledTimes(1);
-
-    expect(
-      hashTokenMock,
-    ).toHaveBeenCalledWith(
-      'raw-session-token',
-    );
-
-    expect(
       createSessionMock,
     ).toHaveBeenCalledTimes(1);
 
-    expect(result.user).toBe(
+    expect(
+      createSessionMock,
+    ).toHaveBeenCalledWith({
+      userId: user.id,
+      ipAddress: undefined,
+      userAgent: undefined,
+    });
+
+    expect(
+      recordAuthEventMock,
+    ).toHaveBeenCalledWith({
+      userId: user.id,
+      type: 'LOGIN',
+      ipAddress: undefined,
+      userAgent: undefined,
+    });
+
+    expect(
+      result.user,
+    ).toBe(
       user,
     );
 
-    expect(result.token).toBe(
+    expect(
+      result.token,
+    ).toBe(
       'raw-session-token',
     );
 
     expect(
       user.lastLoginAt,
     ).not.toBeNull();
-
-    const createdSession =
-      createSessionMock.mock.calls[0][0];
-
-    expect(
-      createdSession.userId,
-    ).toBe(user.id);
-
-    expect(
-      createdSession.tokenHash,
-    ).toBe(
-      'hashed-session-token',
-    );
-
-    expect(
-      createdSession.revokedAt,
-    ).toBeNull();
-
-    expect(
-      createdSession.expiresAt.getTime(),
-    ).toBeGreaterThan(
-      Date.now(),
-    );
   });
 
   it('should reject login when email does not exist', async () => {
@@ -517,76 +533,91 @@ describe('IAM AuthService', () => {
         ) => Promise<boolean>
       >();
 
+    const createSessionMock =
+      jest.fn<
+        ISessionService['create']
+      >();
+
+    const recordAuthEventMock =
+      jest.fn<
+        IAuthEventService['record']
+      >();
+
     findByEmailMock.mockResolvedValue(
       null,
     );
 
     const userService = {
-      findByEmail: findByEmailMock,
-      create: jest.fn(),
-      update: jest.fn(),
+      findByEmail:
+        findByEmailMock,
+
+      create:
+        jest.fn(),
+
+      update:
+        jest.fn(),
     } as unknown as UserService;
 
-    const credentialRepository: IUserCredentialRepository = {
-      findByUserId: findByUserIdMock,
+    const credentialRepository:
+      IUserCredentialRepository = {
+        findByUserId:
+          findByUserIdMock,
 
-      create: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
+        create:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
 
-      update: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
-    };
+        update:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
+      };
 
-    const passwordHasher: IPasswordHasher = {
-      hash: jest.fn<
-        (password: string) => Promise<string>
-      >(),
+    const passwordHasher:
+      IPasswordHasher = {
+        hash:
+          jest.fn<
+            (
+              password: string,
+            ) => Promise<string>
+          >(),
 
-      compare: compareMock,
-    };
+        compare:
+          compareMock,
+      };
 
-    const sessionRepository: ISessionRepository = {
-      findById: jest.fn<
-        (id: string) => Promise<Session | null>
-      >(),
+    const sessionService:
+      ISessionService = {
+        create:
+          createSessionMock,
+      };
 
-      findByTokenHash: jest.fn<
-        (tokenHash: string) => Promise<Session | null>
-      >(),
+    const authEventService:
+      IAuthEventService = {
+        record:
+          recordAuthEventMock,
+      };
 
-      create: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-
-      update: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-    };
-
-    const sessionTokenService: ISessionTokenService = {
-      generate: jest.fn<
-        () => string
-      >(),
-
-      hash: jest.fn<
-        (token: string) => string
-      >(),
-    };
-
-    const authService = new AuthService(
-      userService,
-      credentialRepository,
-      passwordHasher,
-      sessionRepository,
-      sessionTokenService,
-    );
+    const authService =
+      new AuthService(
+        userService,
+        credentialRepository,
+        passwordHasher,
+        sessionService,
+        authEventService,
+      );
 
     await expect(
       authService.login({
-        email: 'not-found@example.com',
-        password: 'wrong-password',
+        email:
+          'not-found@example.com',
+        password:
+          'wrong-password',
       }),
     ).rejects.toThrow(
       'Invalid credentials',
@@ -601,21 +632,27 @@ describe('IAM AuthService', () => {
     ).not.toHaveBeenCalled();
 
     expect(
-      sessionTokenService.generate,
+      createSessionMock,
     ).not.toHaveBeenCalled();
 
     expect(
-      sessionRepository.create,
-    ).not.toHaveBeenCalled();
+      recordAuthEventMock,
+    ).toHaveBeenCalledWith({
+      userId: null,
+      type: 'LOGIN_FAILED',
+      ipAddress: undefined,
+      userAgent: undefined,
+    });
   });
 
   it('should reject login when password is incorrect', async () => {
-    const user = User.createNew({
-      id: 'user-2',
-      email: 'abdul2@example.com',
-      firstName: 'Abdul',
-      lastName: 'Halim',
-    });
+    const user =
+      User.createNew({
+        id: 'user-2',
+        email: 'abdul2@example.com',
+        firstName: 'Abdul',
+        lastName: 'Halim',
+      });
 
     const credentials =
       UserCredential.createNew({
@@ -651,6 +688,16 @@ describe('IAM AuthService', () => {
         (user: User) => Promise<User>
       >();
 
+    const createSessionMock =
+      jest.fn<
+        ISessionService['create']
+      >();
+
+    const recordAuthEventMock =
+      jest.fn<
+        IAuthEventService['record']
+      >();
+
     findByEmailMock.mockResolvedValue(
       user,
     );
@@ -668,71 +715,76 @@ describe('IAM AuthService', () => {
     );
 
     const userService = {
-      findByEmail: findByEmailMock,
-      create: jest.fn(),
-      update: updateUserMock,
+      findByEmail:
+        findByEmailMock,
+
+      create:
+        jest.fn(),
+
+      update:
+        updateUserMock,
     } as unknown as UserService;
 
-    const credentialRepository: IUserCredentialRepository = {
-      findByUserId: findByUserIdMock,
+    const credentialRepository:
+      IUserCredentialRepository = {
+        findByUserId:
+          findByUserIdMock,
 
-      create: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
+        create:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
 
-      update: jest.fn<
-        (credentials: UserCredential) => Promise<UserCredential>
-      >(),
-    };
+        update:
+          jest.fn<
+            (
+              credentials: UserCredential,
+            ) => Promise<UserCredential>
+          >(),
+      };
 
-    const passwordHasher: IPasswordHasher = {
-      hash: jest.fn<
-        (password: string) => Promise<string>
-      >(),
+    const passwordHasher:
+      IPasswordHasher = {
+        hash:
+          jest.fn<
+            (
+              password: string,
+            ) => Promise<string>
+          >(),
 
-      compare: compareMock,
-    };
+        compare:
+          compareMock,
+      };
 
-    const sessionRepository: ISessionRepository = {
-      findById: jest.fn<
-        (id: string) => Promise<Session | null>
-      >(),
+    const sessionService:
+      ISessionService = {
+        create:
+          createSessionMock,
+      };
 
-      findByTokenHash: jest.fn<
-        (tokenHash: string) => Promise<Session | null>
-      >(),
+    const authEventService:
+      IAuthEventService = {
+        record:
+          recordAuthEventMock,
+      };
 
-      create: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-
-      update: jest.fn<
-        (session: Session) => Promise<Session>
-      >(),
-    };
-
-    const sessionTokenService: ISessionTokenService = {
-      generate: jest.fn<
-        () => string
-      >(),
-
-      hash: jest.fn<
-        (token: string) => string
-      >(),
-    };
-
-    const authService = new AuthService(
-      userService,
-      credentialRepository,
-      passwordHasher,
-      sessionRepository,
-      sessionTokenService,
-    );
+    const authService =
+      new AuthService(
+        userService,
+        credentialRepository,
+        passwordHasher,
+        sessionService,
+        authEventService,
+      );
 
     await expect(
       authService.login({
-        email: 'abdul2@example.com',
-        password: 'wrong-password',
+        email:
+          'abdul2@example.com',
+        password:
+          'wrong-password',
       }),
     ).rejects.toThrow(
       'Invalid credentials',
@@ -743,11 +795,16 @@ describe('IAM AuthService', () => {
     ).not.toHaveBeenCalled();
 
     expect(
-      sessionTokenService.generate,
+      createSessionMock,
     ).not.toHaveBeenCalled();
 
     expect(
-      sessionRepository.create,
-    ).not.toHaveBeenCalled();
+      recordAuthEventMock,
+    ).toHaveBeenCalledWith({
+      userId: user.id,
+      type: 'LOGIN_FAILED',
+      ipAddress: undefined,
+      userAgent: undefined,
+    });
   });
 });

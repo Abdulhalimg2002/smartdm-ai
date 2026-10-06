@@ -37,11 +37,15 @@ describe('RevokeSessionService', () => {
     update: jest.MockedFunction<
       ISessionRepository['update']
     >;
+    revokeAllByUserId: jest.MockedFunction<
+      ISessionRepository['revokeAllByUserId']
+    >;
   } = {
     findById: jest.fn(),
     findByTokenHash: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
+    revokeAllByUserId: jest.fn(),
   };
 
   const service = new RevokeSessionService(

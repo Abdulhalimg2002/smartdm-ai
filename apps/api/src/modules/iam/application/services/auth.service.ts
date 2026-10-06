@@ -1,6 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
-
-import { randomUUID } from 'node:crypto';
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
 import { UserService } from './user.service.js';
 
@@ -8,11 +9,6 @@ import {
   USER_CREDENTIAL_REPOSITORY,
   type IUserCredentialRepository,
 } from '../../domain/repositories/user-credential.repository.js';
-
-import {
-  SESSION_REPOSITORY,
-  type ISessionRepository,
-} from '../../domain/repositories/session.repository.js';
 
 import {
   User,
@@ -23,18 +19,14 @@ import {
 } from '../../domain/entities/user-credential.entity.js';
 
 import {
-  Session,
-} from '../../domain/entities/session.entity.js';
-
-import {
   PASSWORD_HASHER,
   type IPasswordHasher,
 } from './password-hasher.service.js';
 
 import {
-  SESSION_TOKEN_SERVICE,
-  type ISessionTokenService,
-} from './session-token.service.js';
+  SESSION_SERVICE,
+  type ISessionService,
+} from './session.service.js';
 
 import {
   EmailAlreadyRegisteredError,
@@ -44,22 +36,33 @@ import {
   InvalidCredentialsError,
 } from '../errors/invalid-credentials.error.js';
 
+import {
+  AUTH_EVENT_SERVICE,
+  type IAuthEventService,
+} from './auth-event.service.js';
+
+import { randomUUID } from 'node:crypto';
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
 
     @Inject(USER_CREDENTIAL_REPOSITORY)
-    private readonly credentialRepository: IUserCredentialRepository,
+    private readonly credentialRepository:
+      IUserCredentialRepository,
 
     @Inject(PASSWORD_HASHER)
-    private readonly passwordHasher: IPasswordHasher,
+    private readonly passwordHasher:
+      IPasswordHasher,
 
-    @Inject(SESSION_REPOSITORY)
-    private readonly sessionRepository: ISessionRepository,
+    @Inject(SESSION_SERVICE)
+    private readonly sessionService:
+      ISessionService,
 
-    @Inject(SESSION_TOKEN_SERVICE)
-    private readonly sessionTokenService: ISessionTokenService,
+    @Inject(AUTH_EVENT_SERVICE)
+    private readonly authEventService:
+      IAuthEventService,
   ) {}
 
   async register(params: {
@@ -67,6 +70,8 @@ export class AuthService {
     password: string;
     firstName: string;
     lastName: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
   }): Promise<User> {
     const existingUser =
       await this.userService.findByEmail(
@@ -106,12 +111,21 @@ export class AuthService {
       credential,
     );
 
+    await this.authEventService.record({
+      userId: user.id,
+      type: 'REGISTER',
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
+    });
+
     return user;
   }
 
   async login(params: {
     email: string;
     password: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
   }): Promise<{
     user: User;
     token: string;
@@ -122,6 +136,13 @@ export class AuthService {
       );
 
     if (!user) {
+      await this.authEventService.record({
+        userId: null,
+        type: 'LOGIN_FAILED',
+        ipAddress: params.ipAddress,
+        userAgent: params.userAgent,
+      });
+
       throw new InvalidCredentialsError();
     }
 
@@ -141,6 +162,13 @@ export class AuthService {
       );
 
     if (!isPasswordValid) {
+      await this.authEventService.record({
+        userId: user.id,
+        type: 'LOGIN_FAILED',
+        ipAddress: params.ipAddress,
+        userAgent: params.userAgent,
+      });
+
       throw new InvalidCredentialsError();
     }
 
@@ -148,35 +176,23 @@ export class AuthService {
 
     await this.userService.update(user);
 
-    const rawToken =
-      this.sessionTokenService.generate();
-
-    const tokenHash =
-      this.sessionTokenService.hash(
-        rawToken,
-      );
-
-    const expiresAt =
-      new Date(
-        Date.now() +
-          30 * 24 * 60 * 60 * 1000,
-      );
-
-    const session =
-      Session.createNew({
-        id: randomUUID(),
+    const { token } =
+      await this.sessionService.create({
         userId: user.id,
-        tokenHash,
-        expiresAt,
+        ipAddress: params.ipAddress,
+        userAgent: params.userAgent,
       });
 
-    await this.sessionRepository.create(
-      session,
-    );
+    await this.authEventService.record({
+      userId: user.id,
+      type: 'LOGIN',
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
+    });
 
     return {
       user,
-      token: rawToken,
+      token,
     };
   }
 }
