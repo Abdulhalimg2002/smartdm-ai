@@ -15,14 +15,36 @@ const varchar = <N extends number>(value: string) =>
   };
 
 const toTemporalInstant = (
-  value: Date | null,
+  value: Date | Temporal.Instant | null,
 ): Temporal.Instant | null => {
   if (!value) {
     return null;
   }
 
+  if (value instanceof Date) {
+    return Temporal.Instant.fromEpochMilliseconds(
+      value.getTime(),
+    );
+  }
+
   return Temporal.Instant.fromEpochMilliseconds(
-    value.getTime(),
+    Number(value.epochMilliseconds),
+  );
+};
+
+const toDate = (
+  value: Date | Temporal.Instant | null,
+): Date | null => {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  return new Date(
+    Number(value.epochMilliseconds),
   );
 };
 
@@ -47,14 +69,17 @@ export class PrismaUserRepository
       firstName: record.firstName,
       lastName: record.lastName,
       status: record.status as UserStatus,
-      emailVerifiedAt:
-        record.emailVerifiedAt,
-      lastLoginAt:
-        record.lastLoginAt,
-      createdAt:
-        record.createdAt,
-      updatedAt:
-        record.updatedAt,
+     emailVerifiedAt:
+  toDate(record.emailVerifiedAt),
+
+lastLoginAt:
+  toDate(record.lastLoginAt),
+
+createdAt:
+  toDate(record.createdAt)!,
+
+updatedAt:
+  toDate(record.updatedAt)!,
     });
   }
 
@@ -78,14 +103,14 @@ export class PrismaUserRepository
       firstName: record.firstName,
       lastName: record.lastName,
       status: record.status as UserStatus,
-      emailVerifiedAt:
-        record.emailVerifiedAt,
-      lastLoginAt:
-        record.lastLoginAt,
-      createdAt:
-        record.createdAt,
-      updatedAt:
-        record.updatedAt,
+     emailVerifiedAt:
+    toDate(record.emailVerifiedAt),
+  lastLoginAt:
+    toDate(record.lastLoginAt),
+  createdAt:
+    toDate(record.createdAt)!,
+  updatedAt:
+    toDate(record.updatedAt)!,
     });
   }
 
@@ -132,13 +157,13 @@ export class PrismaUserRepository
       lastName: record.lastName,
       status: record.status as UserStatus,
       emailVerifiedAt:
-        record.emailVerifiedAt,
-      lastLoginAt:
-        record.lastLoginAt,
-      createdAt:
-        record.createdAt,
-      updatedAt:
-        record.updatedAt,
+    toDate(record.emailVerifiedAt),
+  lastLoginAt:
+    toDate(record.lastLoginAt),
+  createdAt:
+    toDate(record.createdAt)!,
+  updatedAt:
+    toDate(record.updatedAt)!,
     });
   }
 
@@ -190,14 +215,14 @@ export class PrismaUserRepository
       firstName: record.firstName,
       lastName: record.lastName,
       status: record.status as UserStatus,
-      emailVerifiedAt:
-        record.emailVerifiedAt,
-      lastLoginAt:
-        record.lastLoginAt,
-      createdAt:
-        record.createdAt,
-      updatedAt:
-        record.updatedAt,
+     emailVerifiedAt:
+    toDate(record.emailVerifiedAt),
+  lastLoginAt:
+    toDate(record.lastLoginAt),
+  createdAt:
+    toDate(record.createdAt)!,
+  updatedAt:
+    toDate(record.updatedAt)!,
     });
   }
 }

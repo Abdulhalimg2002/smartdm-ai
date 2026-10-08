@@ -2,11 +2,13 @@ import {
   Body,
   ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   Inject,
   Param,
   Post,
+  Query,
   Req,
   UnauthorizedException,
   UseGuards,
@@ -33,6 +35,9 @@ import { FORGOT_PASSWORD_SERVICE,type IForgotPasswordService } from '../../appli
 import { ForgotPasswordDto } from '../../application/dto/forgot-password.dto.js';
 import { type IResetPasswordService, RESET_PASSWORD_SERVICE } from '../../application/services/reset-password.service.js';
 import { ResetPasswordDto } from '../../application/dto/reset-password.dto.js';
+import { GOOGLE_OAUTH_CLIENT, type IGoogleOAuthClient } from '../../domain/services/google-oauth.client.js';
+import { GOOGLE_AUTH_SERVICE, type IGoogleAuthService } from '../../application/services/google-auth.service.js';
+import { GoogleEmailNotVerifiedError } from '../../application/errors/google-email-not-verified.error.js';
 type AuthenticatedRequest = Request & {
   token: string;
   user: User;
@@ -54,6 +59,12 @@ private readonly forgotPasswordService:
   @Inject(RESET_PASSWORD_SERVICE)
 private readonly resetPasswordService:
   IResetPasswordService,
+  @Inject(GOOGLE_OAUTH_CLIENT)
+  private readonly googleOAuthClient:
+    IGoogleOAuthClient,
+    @Inject(GOOGLE_AUTH_SERVICE)
+private readonly googleAuthService:
+  IGoogleAuthService,
 ) {}
 
 
@@ -155,6 +166,33 @@ async revokeSession(
     throw error;
   }
 }
+@Post('logout')
+@HttpCode(200)
+@UseGuards(SessionAuthGuard)
+async logout(
+  @Req() request: AuthenticatedRequest,
+) {
+  try {
+    await this.logoutService.logout({
+      token: request.token,
+      ipAddress: request.ip,
+      userAgent:
+        request.get('user-agent') ?? null,
+    });
+
+    return {
+      message: 'Logged out successfully',
+    };
+  } catch (error) {
+    if (error instanceof InvalidSessionError) {
+      throw new UnauthorizedException(
+        error.message,
+      );
+    }
+
+    throw error;
+  }
+}
 @Post('forgot-password')
 @HttpCode(200)
 async forgotPassword(
@@ -192,6 +230,47 @@ async resetPassword(
       'Password has been reset successfully.',
   };
 }
+@Get('google')
+async googleLogin() {
+  return {
+    url:
+      this.googleOAuthClient
+        .getAuthorizationUrl(),
+  };
+}
+@Get('google/callback')
+async googleCallback(
+  @Query('code') code: string,
+  @Req() request: Request,
+) {
+  try {
+    const result =
+      await this.googleAuthService.loginWithCode({
+        code,
+        ipAddress: request.ip ?? null,
+        userAgent:
+          request.get('user-agent') ?? null,
+      });
+
+    return {
+      user: UserResponseDto.fromEntity(
+        result.user,
+      ),
+      token: result.token,
+    };
+  } catch (error) {
+    if (
+      error instanceof GoogleEmailNotVerifiedError
+    ) {
+      throw new ForbiddenException(
+        error.message,
+      );
+    }
+
+    throw error;
+  }
+}
+
 
 
 }

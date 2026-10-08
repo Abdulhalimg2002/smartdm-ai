@@ -172,6 +172,8 @@ import {
 import {
   GoogleOAuthClient,
 } from './infrastructure/auth/google/google-oauth.client.js';
+import { GOOGLE_AUTH_SERVICE } from './application/services/google-auth.service.js';
+import { GoogleAuthServiceImpl } from './application/services/google-auth.service.impl.js';
 
 @Module({
   controllers: [
@@ -286,6 +288,10 @@ import {
         });
       },
     },
+    {
+  provide: GOOGLE_AUTH_SERVICE,
+  useClass: GoogleAuthServiceImpl,
+},
 
     UserAuthProviderService,
 
