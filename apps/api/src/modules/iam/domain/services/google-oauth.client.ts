@@ -8,7 +8,7 @@ export interface GoogleUserProfile {
 }
 
 export interface IGoogleOAuthClient {
-  getAuthorizationUrl(): string;
+  getAuthorizationUrl(state: string): string;
 
   exchangeCodeForProfile(
     code: string,

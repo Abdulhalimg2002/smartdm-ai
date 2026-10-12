@@ -1,0 +1,20 @@
+{
+  "common": {
+    "appName": "SmartDM AI",
+    "language": "اللغة",
+    "loading": "جارٍ التحميل...",
+    "continue": "متابعة",
+    "back": "رجوع",
+    "text":"نص"
+    
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "welcomeBack": "أهلاً بعودتك",
+    "loginDescription": "سجّل الدخول للمتابعة إلى مساحة عملك"
+  }
+}

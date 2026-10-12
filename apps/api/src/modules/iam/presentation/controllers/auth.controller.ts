@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+   Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -30,7 +31,7 @@ import {
 } from '../../application/services/revoke-session.service.js';
 import { User } from '../../domain/entities/user.entity.js';
 import { InvalidSessionError } from '../../application/errors/invalid-session.error.js';
-import type { Request } from 'express';
+import type { Request ,Response } from 'express';
 import { FORGOT_PASSWORD_SERVICE,type IForgotPasswordService } from '../../application/services/forgot-password.service.js';
 import { ForgotPasswordDto } from '../../application/dto/forgot-password.dto.js';
 import { type IResetPasswordService, RESET_PASSWORD_SERVICE } from '../../application/services/reset-password.service.js';
@@ -38,6 +39,8 @@ import { ResetPasswordDto } from '../../application/dto/reset-password.dto.js';
 import { GOOGLE_OAUTH_CLIENT, type IGoogleOAuthClient } from '../../domain/services/google-oauth.client.js';
 import { GOOGLE_AUTH_SERVICE, type IGoogleAuthService } from '../../application/services/google-auth.service.js';
 import { GoogleEmailNotVerifiedError } from '../../application/errors/google-email-not-verified.error.js';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
+
 type AuthenticatedRequest = Request & {
   token: string;
   user: User;
@@ -98,48 +101,55 @@ async register(
     throw error;
   }
 }
- @Post('login')
-  @HttpCode(200)
-  async login(
-    @Body() dto: LoginDto,
-    @Req() request: Request,
-  ) {
-    try {
-      const result =
-        await this.authService.login({
-          email: dto.email,
-          password: dto.password,
-        ipAddress: request.ip,
-    userAgent: request.get('user-agent') ?? null,
-        });
+ 
+@Post('login')
+@HttpCode(200)
+async login(
+  @Body() dto: LoginDto,
+  @Req() request: Request,
+  @Res({ passthrough: true }) response: Response,
+) {
+  try {
+    const result = await this.authService.login({
+      email: dto.email,
+      password: dto.password,
+      ipAddress: request.ip,
+      userAgent: request.get('user-agent') ?? null,
+    });
 
-      return {
-        user: UserResponseDto.fromEntity(
-          result.user,
-        ),
-        token: result.token,
-      };
-    } catch (error) {
-      if (
-        error instanceof InvalidCredentialsError
-      ) {
-        throw new UnauthorizedException(
-          error.message,
-        );
-      }
+    const isProduction = process.env.NODE_ENV === 'production';
 
-      throw error;
+    response.cookie('smartdm_session', result.token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      user: UserResponseDto.fromEntity(result.user),
+    };
+  } catch (error) {
+    if (error instanceof InvalidCredentialsError) {
+      throw new UnauthorizedException(error.message);
     }
+
+    throw error;
   }
+}
+
  
   
-  @Get('me')
+
+@Get('me')
 @UseGuards(SessionAuthGuard)
-getMe() {
-  return {
-    message: 'Authenticated',
-  };
+getMe(
+  @Req() request: AuthenticatedRequest,
+) {
+  return UserResponseDto.fromEntity(request.user);
 }
+
 @Post('sessions/:sessionId/revoke')
 @HttpCode(200)
 @UseGuards(SessionAuthGuard)
@@ -166,18 +176,28 @@ async revokeSession(
     throw error;
   }
 }
+
 @Post('logout')
 @HttpCode(200)
 @UseGuards(SessionAuthGuard)
 async logout(
   @Req() request: AuthenticatedRequest,
+  @Res({ passthrough: true }) response: Response,
 ) {
   try {
     await this.logoutService.logout({
       token: request.token,
       ipAddress: request.ip,
-      userAgent:
-        request.get('user-agent') ?? null,
+      userAgent: request.get('user-agent') ?? null,
+    });
+
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    response.clearCookie('smartdm_session', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/',
     });
 
     return {
@@ -185,14 +205,13 @@ async logout(
     };
   } catch (error) {
     if (error instanceof InvalidSessionError) {
-      throw new UnauthorizedException(
-        error.message,
-      );
+      throw new UnauthorizedException(error.message);
     }
 
     throw error;
   }
 }
+
 @Post('forgot-password')
 @HttpCode(200)
 async forgotPassword(
@@ -231,45 +250,98 @@ async resetPassword(
   };
 }
 @Get('google')
-async googleLogin() {
+@Get('google')
+async googleLogin(
+  @Res({ passthrough: true }) response: Response,
+) {
+  const state = randomBytes(32).toString('hex');
+
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  response.cookie('smartdm_google_oauth_state', state, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax',
+    path: '/auth/google/callback',
+    maxAge: 10 * 60 * 1000,
+  });
+
   return {
-    url:
-      this.googleOAuthClient
-        .getAuthorizationUrl(),
+    url: this.googleOAuthClient.getAuthorizationUrl(state),
   };
 }
+
 @Get('google/callback')
 async googleCallback(
   @Query('code') code: string,
+  @Query('state') state: string,
   @Req() request: Request,
+  @Res({ passthrough: true }) response: Response,
 ) {
-  try {
-    const result =
-      await this.googleAuthService.loginWithCode({
-        code,
-        ipAddress: request.ip ?? null,
-        userAgent:
-          request.get('user-agent') ?? null,
-      });
+  const isProduction = process.env.NODE_ENV === 'production';
 
-    return {
-      user: UserResponseDto.fromEntity(
-        result.user,
-      ),
-      token: result.token,
-    };
-  } catch (error) {
-    if (
-      error instanceof GoogleEmailNotVerifiedError
-    ) {
-      throw new ForbiddenException(
-        error.message,
-      );
-    }
+  const clearStateCookie = () => {
+    response.clearCookie('smartdm_google_oauth_state', {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+      path: '/auth/google/callback',
+    });
+  };
 
-    throw error;
+  const savedState = request.cookies?.smartdm_google_oauth_state;
+
+  // Reject missing or malformed state values.
+  if (
+    typeof state !== 'string' ||
+    typeof savedState !== 'string' ||
+    !/^[a-f0-9]{64}$/.test(state) ||
+    !/^[a-f0-9]{64}$/.test(savedState)
+  ) {
+    clearStateCookie();
+    throw new UnauthorizedException('Invalid Google OAuth state');
   }
+
+  const stateMatches = timingSafeEqual(
+    Buffer.from(state, 'hex'),
+    Buffer.from(savedState, 'hex'),
+  );
+
+  // The state must match before we process Google's authorization code.
+  clearStateCookie();
+
+  if (!stateMatches) {
+    throw new UnauthorizedException('Invalid Google OAuth state');
+  }
+
+try {
+  const result = await this.googleAuthService.loginWithCode({
+    code,
+    ipAddress: request.ip ?? null,
+    userAgent: request.get('user-agent') ?? null,
+  });
+
+  response.cookie('smartdm_session', result.token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    path: '/',
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+
+  const frontendUrl =
+    process.env.FRONTEND_URL ;
+
+  return response.redirect(`${frontendUrl}/en`);
+} catch (error) {
+  if (error instanceof GoogleEmailNotVerifiedError) {
+    throw new ForbiddenException(error.message);
+  }
+
+  throw error;
 }
+}
+
 
 
 

@@ -1,0 +1,19 @@
+{
+  "common": {
+    "appName": "SmartDM AI",
+    "language": "Language",
+    "loading": "Loading...",
+    "continue": "Continue",
+    "back": "Back"
+    
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Create account",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "welcomeBack": "Welcome back",
+    "loginDescription": "Sign in to continue to your workspace"
+  }
+}

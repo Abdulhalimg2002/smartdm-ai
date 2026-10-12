@@ -36,17 +36,14 @@ export class GoogleOAuthClient
       );
   }
 
-  getAuthorizationUrl(): string {
-    return this.oauthClient.generateAuthUrl({
-      access_type: 'offline',
-      scope: [
-        'openid',
-        'email',
-        'profile',
-      ],
-      prompt: 'select_account',
-    });
-  }
+ getAuthorizationUrl(state: string): string {
+  return this.oauthClient.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['openid', 'email', 'profile'],
+    prompt: 'select_account',
+    state,
+  });
+}
 
   async exchangeCodeForProfile(
     code: string,

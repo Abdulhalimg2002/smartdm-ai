@@ -1,3 +1,4 @@
+
 import {
   CanActivate,
   ExecutionContext,
@@ -11,24 +12,16 @@ import {
   type ISessionValidationService,
 } from '../../application/services/session-validation.service.js';
 
-import {
-  Session,
-} from '../../domain/entities/session.entity.js';
-
-import {
-  User,
-} from '../../domain/entities/user.entity.js';
-
-import {
-  InvalidSessionError,
-} from '../../application/errors/invalid-session.error.js';
+import { Session } from '../../domain/entities/session.entity.js';
+import { User } from '../../domain/entities/user.entity.js';
+import { InvalidSessionError } from '../../application/errors/invalid-session.error.js';
 
 import type { Request } from 'express';
 
 type AuthenticatedRequest = Request & {
   user: User;
   session: Session;
-token: string;
+  token: string;
 };
 
 @Injectable()
@@ -44,32 +37,15 @@ export class SessionAuthGuard implements CanActivate {
     const request =
       context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-    const authorization =
-      request.headers.authorization;
+    const token = request.cookies?.smartdm_session;
 
-    if (!authorization) {
-      throw new UnauthorizedException(
-        'Invalid session',
-      );
-    }
-
-    const [scheme, token] =
-      authorization.split(' ');
-
-    if (
-      scheme !== 'Bearer' ||
-      !token
-    ) {
-      throw new UnauthorizedException(
-        'Invalid session',
-      );
+    if (!token || typeof token !== 'string') {
+      throw new UnauthorizedException('Invalid session');
     }
 
     try {
       const result =
-        await this.sessionValidationService.validate(
-          token,
-        );
+        await this.sessionValidationService.validate(token);
 
       request.user = result.user;
       request.session = result.session;
@@ -77,12 +53,8 @@ export class SessionAuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      if (
-        error instanceof InvalidSessionError
-      ) {
-        throw new UnauthorizedException(
-          'Invalid session',
-        );
+      if (error instanceof InvalidSessionError) {
+        throw new UnauthorizedException('Invalid session');
       }
 
       throw error;

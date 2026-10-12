@@ -47,9 +47,16 @@ import type {
 
 import type {
   Request,
+  Response,
 } from 'express';
 import { GoogleEmailNotVerifiedError } from '../application/errors/google-email-not-verified.error.js';
-import { ForbiddenException } from '@nestjs/common';
+
+function createResponseMock(): Response {
+  return {
+    cookie: jest.fn(),
+    clearCookie: jest.fn(),
+  } as unknown as Response;
+}
 
 type AuthenticatedRequest = Request & {
   user: User;
@@ -220,6 +227,8 @@ describe('IAM AuthController', () => {
         ),
       } as unknown as Request;
 
+      const response = createResponseMock();
+
       const result =
         await controller.login(
           {
@@ -227,6 +236,7 @@ describe('IAM AuthController', () => {
             password: 'StrongPassword123!',
           },
           request,
+          response,
         );
 
       expect(
@@ -238,6 +248,12 @@ describe('IAM AuthController', () => {
         userAgent: 'PostmanRuntime/Test',
       });
 
+      expect(response.cookie).toHaveBeenCalledWith(
+        'smartdm_session',
+        'raw-session-token',
+        expect.objectContaining({ httpOnly: true }),
+      );
+
       expect(result).toEqual({
         user: {
           id: user.id,
@@ -245,16 +261,11 @@ describe('IAM AuthController', () => {
           firstName: user.firstName,
           lastName: user.lastName,
           status: user.status,
-          emailVerifiedAt:
-            user.emailVerifiedAt,
-          lastLoginAt:
-            user.lastLoginAt,
-          createdAt:
-            user.createdAt,
-          updatedAt:
-            user.updatedAt,
+          emailVerifiedAt: user.emailVerifiedAt,
+          lastLoginAt: user.lastLoginAt,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
-        token: 'raw-session-token',
       });
     },
   );
@@ -317,6 +328,8 @@ describe('IAM AuthController', () => {
         ),
       } as unknown as Request;
 
+      const response = createResponseMock();
+
       await expect(
         controller.login(
           {
@@ -324,6 +337,7 @@ describe('IAM AuthController', () => {
             password: 'WrongPassword123!',
           },
           request,
+          response,
         ),
       ).rejects.toMatchObject({
         status: 401,
@@ -584,12 +598,22 @@ describe('IAM AuthController', () => {
           googleAuthService,
         );
 
+      const response = createResponseMock();
+
       const result =
-        await controller.googleLogin();
+        await controller.googleLogin(response);
 
       expect(
         getAuthorizationUrlMock,
       ).toHaveBeenCalledTimes(1);
+      expect(getAuthorizationUrlMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^[a-f0-9]{64}$/),
+      );
+      expect(response.cookie).toHaveBeenCalledWith(
+        'smartdm_google_oauth_state',
+        expect.stringMatching(/^[a-f0-9]{64}$/),
+        expect.objectContaining({ httpOnly: true }),
+      );
 
       expect(result).toEqual({
         url: authorizationUrl,
@@ -644,17 +668,22 @@ describe('IAM AuthController', () => {
           googleAuthService,
         );
 
+      const state = 'a'.repeat(64);
       const request = {
         ip: '127.0.0.1',
+        cookies: { smartdm_google_oauth_state: state },
         get: jest.fn().mockReturnValue(
           'PostmanRuntime/Test',
         ),
       } as unknown as Request;
+      const response = createResponseMock();
 
       const result =
         await controller.googleCallback(
           'google-code',
+          state,
           request,
+          response,
         );
 
       expect(
@@ -666,20 +695,29 @@ describe('IAM AuthController', () => {
           'PostmanRuntime/Test',
       });
 
+      expect(response.clearCookie).toHaveBeenCalledWith(
+        'smartdm_google_oauth_state',
+        expect.any(Object),
+      );
+      expect(response.cookie).toHaveBeenCalledWith(
+        'smartdm_session',
+        'google-session-token',
+        expect.objectContaining({ httpOnly: true }),
+      );
+
       expect(result).toEqual({
-  user: {
-    id: user.id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    status: user.status,
-    emailVerifiedAt: user.emailVerifiedAt,
-    lastLoginAt: user.lastLoginAt,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  },
-  token: 'google-session-token',
-});
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          status: user.status,
+          emailVerifiedAt: user.emailVerifiedAt,
+          lastLoginAt: user.lastLoginAt,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+      });
     },
   );
  it(
@@ -714,17 +752,22 @@ describe('IAM AuthController', () => {
         googleAuthService,
       );
 
+    const state = 'b'.repeat(64);
     const request = {
       ip: '127.0.0.1',
+      cookies: { smartdm_google_oauth_state: state },
       get: jest.fn().mockReturnValue(
         'PostmanRuntime/Test',
       ),
     } as unknown as Request;
+    const response = createResponseMock();
 
     await expect(
       controller.googleCallback(
         'google-code',
+        state,
         request,
+        response,
       ),
     ).rejects.toMatchObject({
       status: 403,

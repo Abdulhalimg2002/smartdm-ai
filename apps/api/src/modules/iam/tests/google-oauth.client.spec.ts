@@ -1,3 +1,4 @@
+
 import { OAuth2Client } from 'google-auth-library';
 import { describe, expect, it, jest } from '@jest/globals';
 
@@ -6,19 +7,17 @@ import { GoogleOAuthClient } from '../infrastructure/auth/google/google-oauth.cl
 describe('GoogleOAuthClient', () => {
   const clientId = 'test-client-id';
   const clientSecret = 'test-client-secret';
+  const redirectUri = 'http://localhost:4000/auth/google/callback';
 
-  const redirectUri =
-    'http://localhost:4000/auth/google/callback';
-
-  it('should generate a Google authorization URL', () => {
-    const generateAuthUrlMock =
-      jest.fn<
-        (options: {
-          access_type: 'offline';
-          scope: string[];
-          prompt: 'select_account';
-        }) => string
-      >();
+  it('should generate a Google authorization URL with state', () => {
+    const generateAuthUrlMock = jest.fn<
+      (options: {
+        access_type: 'offline';
+        scope: string[];
+        prompt: 'select_account';
+        state: string;
+      }) => string
+    >();
 
     generateAuthUrlMock.mockReturnValue(
       'https://accounts.google.com/o/oauth2/v2/auth?client_id=test-client-id',
@@ -39,40 +38,28 @@ describe('GoogleOAuthClient', () => {
       },
     );
 
-    const url = client.getAuthorizationUrl();
+    const state = 'test-oauth-state';
+    const url = client.getAuthorizationUrl(state);
 
-    expect(url).toContain(
-      'https://accounts.google.com',
-    );
+    expect(url).toContain('https://accounts.google.com');
+    expect(url).toContain('client_id=test-client-id');
 
-    expect(url).toContain(
-      'client_id=test-client-id',
-    );
-
-    expect(
-      generateAuthUrlMock,
-    ).toHaveBeenCalledWith({
+    expect(generateAuthUrlMock).toHaveBeenCalledWith({
       access_type: 'offline',
-      scope: [
-        'openid',
-        'email',
-        'profile',
-      ],
+      scope: ['openid', 'email', 'profile'],
       prompt: 'select_account',
+      state,
     });
   });
 
   it('should exchange code and return Google user profile', async () => {
-    const getTokenMock =
-      jest.fn<
-        (
-          code: string,
-        ) => Promise<{
-          tokens: {
-            id_token?: string;
-          };
-        }>
-      >();
+    const getTokenMock = jest.fn<
+      (code: string) => Promise<{
+        tokens: {
+          id_token?: string;
+        };
+      }>
+    >();
 
     getTokenMock.mockResolvedValue({
       tokens: {
@@ -80,31 +67,30 @@ describe('GoogleOAuthClient', () => {
       },
     });
 
-    const verifyIdTokenMock =
-      jest.fn<
-        (params: {
-          idToken: string;
-          audience: string;
-        }) => Promise<{
-          getPayload: () => {
-            sub: string;
-            email: string;
-            given_name: string;
-            family_name: string;
-            picture: string;
-          };
-        }>
-      >();
+    const verifyIdTokenMock = jest.fn<
+      (params: {
+        idToken: string;
+        audience: string;
+      }) => Promise<{
+        getPayload: () => {
+          sub: string;
+          email: string;
+          email_verified: boolean;
+          given_name: string;
+          family_name: string;
+          picture: string;
+        };
+      }>
+    >();
 
     verifyIdTokenMock.mockResolvedValue({
       getPayload: () => ({
         sub: 'google-user-123',
         email: 'user@gmail.com',
+        email_verified: true,
         given_name: 'Abdul',
         family_name: 'Halim',
-        email_verified: true,
-        picture:
-          'https://example.com/avatar.jpg',
+        picture: 'https://example.com/avatar.jpg',
       }),
     });
 
@@ -124,18 +110,15 @@ describe('GoogleOAuthClient', () => {
       },
     );
 
-    const profile =
-      await client.exchangeCodeForProfile(
-        'fake-authorization-code',
-      );
+    const profile = await client.exchangeCodeForProfile(
+      'fake-authorization-code',
+    );
 
     expect(getTokenMock).toHaveBeenCalledWith(
       'fake-authorization-code',
     );
 
-    expect(
-      verifyIdTokenMock,
-    ).toHaveBeenCalledWith({
+    expect(verifyIdTokenMock).toHaveBeenCalledWith({
       idToken: 'fake-id-token',
       audience: clientId,
     });
@@ -143,25 +126,21 @@ describe('GoogleOAuthClient', () => {
     expect(profile).toEqual({
       providerUserId: 'google-user-123',
       email: 'user@gmail.com',
-      firstName: 'Abdul',
       emailVerified: true,
+      firstName: 'Abdul',
       lastName: 'Halim',
-      avatarUrl:
-        'https://example.com/avatar.jpg',
+      avatarUrl: 'https://example.com/avatar.jpg',
     });
   });
 
   it('should reject when Google does not return an ID token', async () => {
-    const getTokenMock =
-      jest.fn<
-        (
-          code: string,
-        ) => Promise<{
-          tokens: {
-            id_token?: string;
-          };
-        }>
-      >();
+    const getTokenMock = jest.fn<
+      (code: string) => Promise<{
+        tokens: {
+          id_token?: string;
+        };
+      }>
+    >();
 
     getTokenMock.mockResolvedValue({
       tokens: {},
@@ -183,26 +162,18 @@ describe('GoogleOAuthClient', () => {
     );
 
     await expect(
-      client.exchangeCodeForProfile(
-        'fake-authorization-code',
-      ),
-    ).rejects.toThrow(
-      'Google ID token was not returned',
-    );
+      client.exchangeCodeForProfile('fake-authorization-code'),
+    ).rejects.toThrow('Google ID token was not returned');
   });
-  
 
   it('should reject when Google profile is missing', async () => {
-    const getTokenMock =
-      jest.fn<
-        (
-          code: string,
-        ) => Promise<{
-          tokens: {
-            id_token?: string;
-          };
-        }>
-      >();
+    const getTokenMock = jest.fn<
+      (code: string) => Promise<{
+        tokens: {
+          id_token?: string;
+        };
+      }>
+    >();
 
     getTokenMock.mockResolvedValue({
       tokens: {
@@ -210,15 +181,14 @@ describe('GoogleOAuthClient', () => {
       },
     });
 
-    const verifyIdTokenMock =
-      jest.fn<
-        (params: {
-          idToken: string;
-          audience: string;
-        }) => Promise<{
-          getPayload: () => undefined;
-        }>
-      >();
+    const verifyIdTokenMock = jest.fn<
+      (params: {
+        idToken: string;
+        audience: string;
+      }) => Promise<{
+        getPayload: () => undefined;
+      }>
+    >();
 
     verifyIdTokenMock.mockResolvedValue({
       getPayload: () => undefined,
@@ -241,26 +211,18 @@ describe('GoogleOAuthClient', () => {
     );
 
     await expect(
-      client.exchangeCodeForProfile(
-        'fake-authorization-code',
-      ),
-    ).rejects.toThrow(
-      'Google user profile not found',
-    );
+      client.exchangeCodeForProfile('fake-authorization-code'),
+    ).rejects.toThrow('Google user profile not found');
   });
-  it(
-  'should reject when Google user ID is missing',
-  async () => {
-    const getTokenMock =
-      jest.fn<
-        (
-          code: string,
-        ) => Promise<{
-          tokens: {
-            id_token?: string;
-          };
-        }>
-      >();
+
+  it('should reject when Google user ID is missing', async () => {
+    const getTokenMock = jest.fn<
+      (code: string) => Promise<{
+        tokens: {
+          id_token?: string;
+        };
+      }>
+    >();
 
     getTokenMock.mockResolvedValue({
       tokens: {
@@ -268,21 +230,20 @@ describe('GoogleOAuthClient', () => {
       },
     });
 
-    const verifyIdTokenMock =
-      jest.fn<
-        (params: {
-          idToken: string;
-          audience: string;
-        }) => Promise<{
-          getPayload: () => {
-            email: string;
-            email_verified: boolean;
-            given_name: string;
-            family_name: string;
-            picture: string;
-          };
-        }>
-      >();
+    const verifyIdTokenMock = jest.fn<
+      (params: {
+        idToken: string;
+        audience: string;
+      }) => Promise<{
+        getPayload: () => {
+          email: string;
+          email_verified: boolean;
+          given_name: string;
+          family_name: string;
+          picture: string;
+        };
+      }>
+    >();
 
     verifyIdTokenMock.mockResolvedValue({
       getPayload: () => ({
@@ -290,8 +251,7 @@ describe('GoogleOAuthClient', () => {
         email_verified: true,
         given_name: 'Abdul',
         family_name: 'Halim',
-        picture:
-          'https://example.com/avatar.jpg',
+        picture: 'https://example.com/avatar.jpg',
       }),
     });
 
@@ -300,54 +260,37 @@ describe('GoogleOAuthClient', () => {
       verifyIdToken: verifyIdTokenMock,
     } as unknown as OAuth2Client;
 
-    const client =
-      new GoogleOAuthClient(
-        {
-          clientId,
-          clientSecret,
-          redirectUri,
-        },
-        {
-          oauthClient,
-        },
-      );
+    const client = new GoogleOAuthClient(
+      {
+        clientId,
+        clientSecret,
+        redirectUri,
+      },
+      {
+        oauthClient,
+      },
+    );
 
     await expect(
-      client.exchangeCodeForProfile(
-        'google-code',
-      ),
-    ).rejects.toThrow(
-      'Google user ID not found',
-    );
+      client.exchangeCodeForProfile('google-code'),
+    ).rejects.toThrow('Google user ID not found');
 
-    expect(
-      getTokenMock,
-    ).toHaveBeenCalledWith(
-      'google-code',
-    );
+    expect(getTokenMock).toHaveBeenCalledWith('google-code');
 
-    expect(
-      verifyIdTokenMock,
-    ).toHaveBeenCalledWith({
+    expect(verifyIdTokenMock).toHaveBeenCalledWith({
       idToken: 'google-id-token',
       audience: clientId,
     });
-  },
-);
+  });
 
-it(
-  'should reject when Google email is missing',
-  async () => {
-    const getTokenMock =
-      jest.fn<
-        (
-          code: string,
-        ) => Promise<{
-          tokens: {
-            id_token?: string;
-          };
-        }>
-      >();
+  it('should reject when Google email is missing', async () => {
+    const getTokenMock = jest.fn<
+      (code: string) => Promise<{
+        tokens: {
+          id_token?: string;
+        };
+      }>
+    >();
 
     getTokenMock.mockResolvedValue({
       tokens: {
@@ -355,21 +298,20 @@ it(
       },
     });
 
-    const verifyIdTokenMock =
-      jest.fn<
-        (params: {
-          idToken: string;
-          audience: string;
-        }) => Promise<{
-          getPayload: () => {
-            sub: string;
-            email_verified: boolean;
-            given_name: string;
-            family_name: string;
-            picture: string;
-          };
-        }>
-      >();
+    const verifyIdTokenMock = jest.fn<
+      (params: {
+        idToken: string;
+        audience: string;
+      }) => Promise<{
+        getPayload: () => {
+          sub: string;
+          email_verified: boolean;
+          given_name: string;
+          family_name: string;
+          picture: string;
+        };
+      }>
+    >();
 
     verifyIdTokenMock.mockResolvedValue({
       getPayload: () => ({
@@ -377,8 +319,7 @@ it(
         email_verified: true,
         given_name: 'Abdul',
         family_name: 'Halim',
-        picture:
-          'https://example.com/avatar.jpg',
+        picture: 'https://example.com/avatar.jpg',
       }),
     });
 
@@ -387,39 +328,26 @@ it(
       verifyIdToken: verifyIdTokenMock,
     } as unknown as OAuth2Client;
 
-    const client =
-      new GoogleOAuthClient(
-        {
-          clientId,
-          clientSecret,
-          redirectUri,
-        },
-        {
-          oauthClient,
-        },
-      );
+    const client = new GoogleOAuthClient(
+      {
+        clientId,
+        clientSecret,
+        redirectUri,
+      },
+      {
+        oauthClient,
+      },
+    );
 
     await expect(
-      client.exchangeCodeForProfile(
-        'google-code',
-      ),
-    ).rejects.toThrow(
-      'Google email not found',
-    );
+      client.exchangeCodeForProfile('google-code'),
+    ).rejects.toThrow('Google email not found');
 
-    expect(
-      getTokenMock,
-    ).toHaveBeenCalledWith(
-      'google-code',
-    );
+    expect(getTokenMock).toHaveBeenCalledWith('google-code');
 
-    expect(
-      verifyIdTokenMock,
-    ).toHaveBeenCalledWith({
+    expect(verifyIdTokenMock).toHaveBeenCalledWith({
       idToken: 'google-id-token',
       audience: clientId,
     });
-  },
-);
-  
+  });
 });
