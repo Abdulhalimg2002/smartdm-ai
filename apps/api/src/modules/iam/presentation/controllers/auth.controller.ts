@@ -70,15 +70,15 @@ private readonly googleAuthService:
   IGoogleAuthService,
 ) {}
 
-
- @Post('register')
+@Post("register")
 @HttpCode(200)
 async register(
   @Body() dto: RegisterDto,
   @Req() request: Request,
+  @Res({ passthrough: true }) response: Response,
 ) {
   try {
-    const user =
+    const result =
       await this.authService.register({
         email: dto.email,
         password: dto.password,
@@ -88,7 +88,17 @@ async register(
         userAgent: request.get('user-agent') ?? null,
       });
 
-    return UserResponseDto.fromEntity(user);
+    const isProduction = process.env.NODE_ENV === "production";
+
+response.cookie("smartdm_session", result.token, {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  path: "/",
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+});
+
+return UserResponseDto.fromEntity(result.user);
   } catch (error) {
     if (
       error instanceof EmailAlreadyRegisteredError
@@ -250,7 +260,6 @@ async resetPassword(
   };
 }
 @Get('google')
-@Get('google')
 async googleLogin(
   @Res({ passthrough: true }) response: Response,
 ) {
@@ -332,7 +341,7 @@ try {
   const frontendUrl =
     process.env.FRONTEND_URL ;
 
-  return response.redirect(`${frontendUrl}/en`);
+  return response.redirect(`${frontendUrl}/en/dashboard`);
 } catch (error) {
   if (error instanceof GoogleEmailNotVerifiedError) {
     throw new ForbiddenException(error.message);

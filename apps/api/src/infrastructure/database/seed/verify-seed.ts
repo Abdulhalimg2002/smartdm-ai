@@ -325,6 +325,323 @@ async function verifySeed() {
   }
 
   // ======================================================
+// Tenant Types
+// ======================================================
+
+const expectedTenantTypes = [
+  varchar<30>('BUSINESS'),
+  varchar<30>('AGENCY'),
+  varchar<30>('ENTERPRISE'),
+  varchar<30>('INDIVIDUAL'),
+] as const;
+
+const tenantTypes =
+  await db.orm.public.TenantType
+    .where({})
+    .all();
+
+console.log(
+  `📦 Tenant Types: ${tenantTypes.length} / 4`,
+);
+
+if (tenantTypes.length !== 4) {
+  failed = true;
+  console.log('❌ Tenant Types count mismatch');
+}
+
+for (const code of expectedTenantTypes) {
+  const tenantType =
+    await db.orm.public.TenantType
+      .where({ code })
+      .first();
+
+  if (!tenantType) {
+    failed = true;
+    console.log(`❌ Missing Tenant Type: ${code}`);
+  }
+}
+
+  // ======================================================
+  // Tenant Statuses
+  // ======================================================
+
+  const expectedTenantStatusCodes = [
+    varchar<30>('PENDING'),
+    varchar<30>('ACTIVE'),
+    varchar<30>('SUSPENDED'),
+    varchar<30>('DISABLED'),
+    varchar<30>('ARCHIVED'),
+  ] as const;
+
+  const tenantStatuses =
+    await db.orm.public.TenantStatus
+      .where({})
+      .all();
+
+  console.log(
+    `📦 Tenant Statuses: ${tenantStatuses.length} / 5`,
+  );
+
+  if (tenantStatuses.length !== 5) {
+    failed = true;
+    console.log(
+      '❌ Tenant Statuses count mismatch',
+    );
+  }
+
+  for (const code of expectedTenantStatusCodes) {
+    const tenantStatus =
+      await db.orm.public.TenantStatus
+        .where({ code })
+        .first();
+
+    if (!tenantStatus) {
+      failed = true;
+      console.log(
+        `❌ Missing Tenant Status: ${code}`,
+      );
+    }
+  }
+
+   // ======================================================
+  // WorkspaceType
+  // ======================================================
+
+  const expectedWorkspaceTypeCodes = [
+  varchar<30>('MARKETING'),
+  varchar<30>('SALES'),
+  varchar<30>('SUPPORT'),
+  varchar<30>('GENERAL'),
+] as const;
+
+const workspaceTypes = await db.orm.public.WorkspaceType.where({}).all();
+
+console.log(`📦 Workspace Types: ${workspaceTypes.length} / 4`);
+
+if (workspaceTypes.length !== 4) {
+  failed = true;
+  console.log('❌ Workspace Types count mismatch');
+}
+
+for (const code of expectedWorkspaceTypeCodes) {
+  const workspaceType = await db.orm.public.WorkspaceType.where({ code }).first();
+
+  if (!workspaceType) {
+    failed = true;
+    console.log(`❌ Missing Workspace Type: ${code}`);
+  }
+}
+
+   // ======================================================
+  // WorkspaceStatus
+  // ======================================================
+
+const expectedWorkspaceStatusCodes = [
+  varchar<30>('PENDING'),
+  varchar<30>('ACTIVE'),
+  varchar<30>('SUSPENDED'),
+  varchar<30>('ARCHIVED'),
+] as const;
+
+const workspaceStatuses =
+  await db.orm.public.WorkspaceStatus.where({}).all();
+
+console.log(`📦 Workspace Statuses: ${workspaceStatuses.length} / 4`);
+
+if (workspaceStatuses.length !== 4) {
+  failed = true;
+  console.log('❌ Workspace Statuses count mismatch');
+}
+
+for (const code of expectedWorkspaceStatusCodes) {
+  const workspaceStatus =
+    await db.orm.public.WorkspaceStatus.where({ code }).first();
+
+  if (!workspaceStatus) {
+    failed = true;
+    console.log(`❌ Missing Workspace Status: ${code}`);
+  }
+}
+
+const expectedRegionTypeCodes = [
+  varchar<30>('COUNTRY'),
+  varchar<30>('STATE'),
+  varchar<30>('CITY'),
+  varchar<30>('DISTRICT'),
+] as const;
+
+const regionTypes = await db.orm.public.RegionType.where({}).all();
+
+console.log(`📦 Region Types: ${regionTypes.length} / 4`);
+
+if (regionTypes.length !== 4) {
+  failed = true;
+  console.log('❌ Region Types count mismatch');
+}
+
+for (const code of expectedRegionTypeCodes) {
+  const regionType = await db.orm.public.RegionType.where({ code }).first();
+
+  if (!regionType) {
+    failed = true;
+    console.log(`❌ Missing Region Type: ${code}`);
+  }
+}
+
+const expectedRegions = [
+  { code: 'TR', typeCode: 'COUNTRY', parentCode: null },
+  { code: 'SY', typeCode: 'COUNTRY', parentCode: null },
+  { code: 'SA', typeCode: 'COUNTRY', parentCode: null },
+
+  { code: 'TR-34', typeCode: 'CITY', parentCode: 'TR' },
+  { code: 'SY-DI', typeCode: 'CITY', parentCode: 'SY' },
+  { code: 'SA-01', typeCode: 'CITY', parentCode: 'SA' },
+
+  { code: 'TR-34-AVC', typeCode: 'DISTRICT', parentCode: 'TR-34' },
+  { code: 'SY-DI-MEZ', typeCode: 'DISTRICT', parentCode: 'SY-DI' },
+  { code: 'SA-01-OLY', typeCode: 'DISTRICT', parentCode: 'SA-01' },
+] as const;
+
+const regions = await db.orm.public.Region.where({}).all();
+
+console.log(`📦 Regions: ${regions.length} / 9`);
+
+if (regions.length !== expectedRegions.length) {
+  failed = true;
+  console.log('❌ Regions count mismatch');
+}
+
+for (const expected of expectedRegions) {
+  const region = await db.orm.public.Region
+    .where({ code: varchar<20>(expected.code) })
+    .first();
+
+  if (!region) {
+    failed = true;
+    console.log(`❌ Missing Region: ${expected.code}`);
+    continue;
+  }
+
+  const regionType = await db.orm.public.RegionType
+    .where({ id: region.regionTypeId })
+    .first();
+
+  if (regionType?.code !== expected.typeCode) {
+    failed = true;
+    console.log(`❌ Wrong RegionType for: ${expected.code}`);
+  }
+
+  if (expected.parentCode === null) {
+    if (region.parentRegionId !== null) {
+      failed = true;
+      console.log(`❌ Expected no parent for: ${expected.code}`);
+    }
+  } else {
+    const parent = await db.orm.public.Region
+      .where({ id: region.parentRegionId! })
+      .first();
+
+    if (parent?.code !== expected.parentCode) {
+      failed = true;
+      console.log(`❌ Wrong parent for: ${expected.code}`);
+    }
+  }
+}
+
+
+const expectedTimezones = [
+  { ianaName: varchar<100>('Europe/Istanbul'), regionCode: 'TR-34' },
+  { ianaName: varchar<100>('Asia/Damascus'), regionCode: 'SY-DI' },
+  { ianaName: varchar<100>('Asia/Riyadh'), regionCode: 'SA-01' },
+] as const;
+
+const timezones = await db.orm.public.Timezone.where({}).all();
+
+console.log(`📦 Timezones: ${timezones.length} / 3`);
+
+if (timezones.length !== expectedTimezones.length) {
+  failed = true;
+  console.log('❌ Timezones count mismatch');
+}
+
+for (const expected of expectedTimezones) {
+  const timezone = await db.orm.public.Timezone
+    .where({ ianaName: expected.ianaName })
+    .first();
+
+  if (!timezone) {
+    failed = true;
+    console.log(`❌ Missing Timezone: ${expected.ianaName}`);
+    continue;
+  }
+
+  const region = await db.orm.public.Region
+    .where({ id: timezone.regionId! })
+    .first();
+
+  if (region?.code !== expected.regionCode) {
+    failed = true;
+    console.log(`❌ Wrong Region for Timezone: ${expected.ianaName}`);
+  }
+}
+
+
+const expectedCurrencies = [
+  {
+    code: varchar<3>('TRY'),
+    numericCode: 949,
+    decimalPlaces: 2,
+  },
+  {
+    code: varchar<3>('SYP'),
+    numericCode: 760,
+    decimalPlaces: 2,
+  },
+  {
+    code: varchar<3>('SAR'),
+    numericCode: 682,
+    decimalPlaces: 2,
+  },
+  {
+    code: varchar<3>('USD'),
+    numericCode: 840,
+    decimalPlaces: 2,
+  },
+] as const;
+
+const currencies = await db.orm.public.Currency.where({}).all();
+
+console.log(`📦 Currencies: ${currencies.length} / 4`);
+
+if (currencies.length !== expectedCurrencies.length) {
+  failed = true;
+  console.log('❌ Currencies count mismatch');
+}
+
+for (const expected of expectedCurrencies) {
+  const currency = await db.orm.public.Currency
+    .where({ code: expected.code })
+    .first();
+
+  if (!currency) {
+    failed = true;
+    console.log(`❌ Missing Currency: ${expected.code}`);
+    continue;
+  }
+
+  if (
+    currency.numericCode !== expected.numericCode ||
+    currency.decimalPlaces !== expected.decimalPlaces
+  ) {
+    failed = true;
+    console.log(`❌ Incorrect data for Currency: ${expected.code}`);
+  }
+}
+
+
+
+
+  // ======================================================
   // Final Result
   // ======================================================
 

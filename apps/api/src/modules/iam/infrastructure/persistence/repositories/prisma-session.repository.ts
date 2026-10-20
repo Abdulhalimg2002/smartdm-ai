@@ -1,12 +1,9 @@
+
 import { Temporal } from '@js-temporal/polyfill';
-
 import { db } from '../../../../../prisma/db.js';
-
+import type { DatabaseOrm } from '../../../../../prisma/orm.types.js';
 import { Session } from '../../../domain/entities/session.entity.js';
-
-import {
-  ISessionRepository,
-} from '../../../domain/repositories/session.repository.js';
+import type { ISessionRepository } from '../../../domain/repositories/session.repository.js';
 
 const varchar = <N extends number>(value: string) =>
   value as string & {
@@ -40,8 +37,12 @@ const toDate = (
 export class PrismaSessionRepository
   implements ISessionRepository
 {
+  constructor(
+    private readonly orm: DatabaseOrm = db.orm,
+  ) {}
+
   async findById(id: string): Promise<Session | null> {
-    const record = await db.orm.public.Session
+    const record = await this.orm.public.Session
       .where({ id })
       .first();
 
@@ -66,7 +67,7 @@ export class PrismaSessionRepository
   async findByTokenHash(
     tokenHash: string,
   ): Promise<Session | null> {
-    const record = await db.orm.public.Session
+    const record = await this.orm.public.Session
       .where({
         tokenHash: varchar<255>(tokenHash),
       })
@@ -91,7 +92,7 @@ export class PrismaSessionRepository
   }
 
   async create(session: Session): Promise<Session> {
-    const record = await db.orm.public.Session.create({
+    const record = await this.orm.public.Session.create({
       id: session.id,
       userId: session.userId,
       tokenHash: varchar<255>(session.tokenHash),
@@ -125,7 +126,7 @@ export class PrismaSessionRepository
   }
 
   async update(session: Session): Promise<Session> {
-    const record = await db.orm.public.Session
+    const record = await this.orm.public.Session
       .where({ id: session.id })
       .update({
         tokenHash: varchar<255>(session.tokenHash),
@@ -161,35 +162,24 @@ export class PrismaSessionRepository
       updatedAt: record.updatedAt,
     });
   }
-  async revokeAllByUserId(
-  userId: string,
-): Promise<void> {
-  const sessions =
-    await db.orm.public.Session
-      .where({
-        userId,
-      })
+
+  async revokeAllByUserId(userId: string): Promise<void> {
+    const sessions = await this.orm.public.Session
+      .where({ userId })
       .all();
 
-  const activeSessions =
-    sessions.filter(
-      (session) =>
-        session.revokedAt === null,
-      );
+    const activeSessions = sessions.filter(
+      (session) => session.revokedAt === null,
+    );
 
-  await Promise.all(
-    activeSessions.map(
-      async (session) => {
-        await db.orm.public.Session
-          .where({
-            id: session.id,
-          })
+    await Promise.all(
+      activeSessions.map(async (session) => {
+        await this.orm.public.Session
+          .where({ id: session.id })
           .update({
-            revokedAt:
-              Temporal.Now.instant(),
+            revokedAt: Temporal.Now.instant(),
           });
-      },
-    ),
-  );
-}
+      }),
+    );
+  }
 }

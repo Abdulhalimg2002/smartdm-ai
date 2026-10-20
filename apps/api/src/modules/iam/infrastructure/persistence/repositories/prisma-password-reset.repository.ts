@@ -50,7 +50,9 @@ const toEntity = (record: any): PasswordReset => {
 
 export class PrismaPasswordResetRepository
   implements IPasswordResetRepository
+  
 {
+  
   async findById(
     id: string,
   ): Promise<PasswordReset | null> {

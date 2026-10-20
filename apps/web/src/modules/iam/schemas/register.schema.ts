@@ -6,8 +6,8 @@ export const registerSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters."),
-  firstName: z.string().min(6, "First name is required."),
-  lastName: z.string().min(6, "Last name is required."),
+  firstName: z.string().min(5, "First name is required."),
+  lastName: z.string().min(5, "Last name is required."),
 });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;

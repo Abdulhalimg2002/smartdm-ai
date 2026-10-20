@@ -1,10 +1,13 @@
+import { ForgotPassword } from "@/modules/iam/components/Forgot-Password";
 
 const forgotPasswordPage=()=>{
     return(
-        <div>
-            <h1>Forgot Password</h1>
-            <p>Enter your email below to reset your password.</p>
-        </div>
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        
+        <ForgotPassword />
+      </div>
+    </div>
     )
 }
 export default forgotPasswordPage;

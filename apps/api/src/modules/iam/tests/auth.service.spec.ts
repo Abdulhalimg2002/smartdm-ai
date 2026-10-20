@@ -161,6 +161,7 @@ describe('IAM AuthService', () => {
       type: 'REGISTER',
       ipAddress: undefined,
       userAgent: undefined,
+      
     });
 
     expect(

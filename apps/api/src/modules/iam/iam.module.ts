@@ -174,10 +174,15 @@ import {
 } from './infrastructure/auth/google/google-oauth.client.js';
 import { GOOGLE_AUTH_SERVICE } from './application/services/google-auth.service.js';
 import { GoogleAuthServiceImpl } from './application/services/google-auth.service.impl.js';
+import { RoleService } from './application/services/role.service.js';
+import { ROLE_REPOSITORY } from './infrastructure/persistence/repositories/role.repository.js';
+import { PrismaRoleRepository } from './infrastructure/persistence/repositories/prisma-role.repository.js';
+import { RoleController } from './presentation/controllers/role.controller.js';
 
 @Module({
   controllers: [
     AuthController,
+     RoleController
   ],
 
   providers: [
@@ -296,6 +301,11 @@ import { GoogleAuthServiceImpl } from './application/services/google-auth.servic
     UserAuthProviderService,
 
     AuthProviderService,
+     RoleService,
+     {
+  provide: ROLE_REPOSITORY,
+  useClass: PrismaRoleRepository,
+},
   ],
 
   exports: [
@@ -313,6 +323,7 @@ import { GoogleAuthServiceImpl } from './application/services/google-auth.servic
     AuthService,
     UserAuthProviderService,
     AuthProviderService,
+    RoleService
   ],
 })
 export class IamModule {}

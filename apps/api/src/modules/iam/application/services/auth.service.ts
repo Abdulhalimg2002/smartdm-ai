@@ -72,7 +72,7 @@ export class AuthService {
     lastName: string;
     ipAddress?: string | null;
     userAgent?: string | null;
-  }): Promise<User> {
+  }): Promise<{ user: User; token: string }> {
     const existingUser =
       await this.userService.findByEmail(
         params.email,
@@ -110,6 +110,11 @@ export class AuthService {
     await this.credentialRepository.create(
       credential,
     );
+    const { token } = await this.sessionService.create({
+  userId: user.id,
+  ipAddress: params.ipAddress,
+  userAgent: params.userAgent,
+});
 
     await this.authEventService.record({
       userId: user.id,
@@ -118,7 +123,10 @@ export class AuthService {
       userAgent: params.userAgent,
     });
 
-    return user;
+   return {
+  user,
+  token,
+};
   }
 
   async login(params: {
